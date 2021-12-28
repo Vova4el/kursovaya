@@ -1,5 +1,4 @@
 import datetime
-
 from sqlalchemy import create_engine
 from sqlalchemy import Column, ForeignKey, Integer, String, Date, Time, select,DATETIME,desc
 from sqlalchemy.orm import sessionmaker
@@ -13,7 +12,27 @@ Base = declarative_base()
 engine = create_engine("postgresql+psycopg2://postgres:13241340@localhost/medical_institution")
 conn = engine.connect()
 
+glob_id=0
 
+#######################СТАТУС_ПОЛЬЗОВАТЕЛЯ#############################
+class user_status(Base):
+    __tablename__ = 'user_status'
+    id = Column(Integer, primary_key=True)
+    status = Column(String(40))
+
+    def __repr__(self):
+        return f'{self.id} {self.status}'
+
+#######################Аккаунты#############################
+class accounts(Base):
+    __tablename__ = 'accounts'
+    id = Column(Integer, primary_key=True)
+    login = Column(String(40))
+    password = Column(String(10))
+    id_stat = Column(Integer, ForeignKey('user_status.id'))
+
+    def __repr__(self):
+        return f'{self.id} {self.login} {self.password} {self.stat_id}'
 
 #######################СТАТУС_ПРИЁМА#############################
 
@@ -51,9 +70,10 @@ class patient(Base):
     __tablename__ = 'patient'
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
+    id_acc = Column(Integer, ForeignKey('accounts.id'))
 
     def __repr__(self):
-        return f'{self.id} {self.name}'
+        return f'{self.id} {self.name} {self.id_acc}'
 
 
 #######################КАБИНЕТЫ#############################
@@ -74,11 +94,12 @@ class personnel(Base):
     id_spec = Column(Integer, ForeignKey('specialization.id'))
     id_office = Column(Integer, ForeignKey('offices.id'))
     name = Column(String(100))
+    id_acc = Column(Integer, ForeignKey('accounts.id'))
 
     def __repr__(self):
-        return f'{self.id} {self.id_spec} {self.id_office} {self.name}'
+        return f'{self.id} {self.id_spec} {self.id_office} {self.name} {self.id_acc}'
 
-    #######################Время_работы#############################
+#######################Время_работы#############################
 
 class working_hours(Base):
     __tablename__ = 'working_hours'
@@ -92,7 +113,7 @@ class working_hours(Base):
     def __repr__(self):
         return f'{self.id} {self.id_day} {self.id_personnel} {self.work_hours} {self.free_time} {self.break_time}'
 
-#######################Приём#############################id, id_patient, id_office, id_reception_status, id_personnel,id_spec, date_insurance_cost
+#######################Приём#############################
 
 class reception(Base):
     __tablename__ = 'reception'
@@ -113,10 +134,11 @@ class med_knigа(Base):
     __tablename__ = 'med_knigа'
     id = Column(Integer, primary_key=True)
     id_patient = Column(Integer, ForeignKey('patient.id'))
+    id_personnel = Column(Integer, ForeignKey('personnel.id'))
     diagnoz = Column(String(100))
 
     def __repr__(self):
-        return f'{self.id} {self.id_patient} {self.diagnoz}'
+        return f'{self.id} {self.id_patient} {self.id_personnel} {self.diagnoz}'
 
 
 

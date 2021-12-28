@@ -1,9 +1,9 @@
 from Qt import *
+from window_class import *
+from Authentication import *
 import sys
 
-app = QtWidgets.QApplication(sys.argv)
-MainWindow = QtWidgets.QMainWindow()
-ui = Ui_MainWindow()
-ui.setupUi(MainWindow)
-MainWindow.show()
+app = QApplication(sys.argv)
+window = log_panel()
+window.show()
 sys.exit(app.exec_())

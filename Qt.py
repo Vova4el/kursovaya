@@ -1,13 +1,39 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog
 from PyQt5.QtWidgets import QTableWidgetItem
 from classes import *
-from datetime import datetime, date, time
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+from PyQt5 import QtCore, QtWidgets
+import sys
+
+class Ui_MainWindow:
+    def __init__(self):
+        self.ui = None
         self.prov = 0
         self.transaction = None
         self.textBrowser = None
+        self.app = QtWidgets.QApplication(sys.argv)
+        self.MainWindow = None
+        self.centralwidget = None
+        self.gridLayout = None
+        self.label_5 = None
+        self.pushButton_2 = None
+        self.pushButton_3 = None
+        self.comboBox_4 = None
+        self.label = None
+        self.comboBox = None
+        self.tableWidget = None
+        self.pushButton = None
+        self.textBrowser = None
+        self.label_4 = None
+        self.label_3 = None
+        self.label_2 = None
+        self.comboBox_2 = None
+        self.comboBox_3 = None
+        self.pushButton_4 = None
+        self.menubar = None
+        self.statusbar = None
+
+    def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 650)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -102,11 +128,9 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        self.add_func()
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Панель Админа"))
         self.label_5.setText(_translate("MainWindow", "Выберите как изменить таблицу"))
         self.pushButton_2.setText(_translate("MainWindow", "Изменить таблицу"))
         self.pushButton_3.setText(_translate("MainWindow", "Подтвердить изменения"))
@@ -116,6 +140,8 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "Выберите строку из таблицы"))
         self.label_2.setText(_translate("MainWindow", "Выберите столбец из таблицы"))
         self.pushButton_4.setText(_translate("MainWindow", "Отменить изменения"))
+        self.comboBox.addItem("Аккаунты")
+        self.comboBox.addItem("Статусы пользователей")
         self.comboBox.addItem("Пациенты")
         self.comboBox.addItem("День")
         self.comboBox.addItem("Специализация")
@@ -128,212 +154,3 @@ class Ui_MainWindow(object):
         self.comboBox_4.addItem("Добавить строку")
         self.comboBox_4.addItem("Удалить строку")
         self.comboBox_4.addItem("Обновить элемент")
-
-    def add_func(self):
-        self.pushButton.clicked.connect(lambda: self.write_table())
-        self.pushButton_2.clicked.connect(lambda: self.change_table())
-        self.pushButton_3.clicked.connect(lambda: self.confirm_change())
-        self.pushButton_4.clicked.connect(lambda: self.undo_change())
-
-    def write_table(self):
-        self.comboBox_2.clear()
-        self.comboBox_3.clear()
-        self.tableWidget.clearSelection()
-        result = self.comboBox.currentText()
-        line = 0
-        collums = []
-        if result == "Пациенты":
-            table = patient
-            self.tableWidget.setColumnCount(2)
-            collums = ['id', 'name']
-            self.tableWidget.setHorizontalHeaderLabels(["ID", "ФИО"])
-        if result == "День":
-            table = day
-            self.tableWidget.setColumnCount(2)
-            collums = ['id', 'name']
-            self.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "День"])
-        if result == "Специализация":
-            table = specialization
-            self.tableWidget.setColumnCount(2)
-            collums = ['id', 'name_spec']
-            self.tableWidget.setHorizontalHeaderLabels(["ID", "Специализация"])
-        if result == "Статус приёма":
-            table = reception_status
-            self.tableWidget.setColumnCount(2)
-            collums = ['id', 'name']
-            self.tableWidget.setHorizontalHeaderLabels(["ID", "Статус"])
-        if result == "Кабинеты":
-            table = offices
-            self.tableWidget.setColumnCount(2)
-            collums = ['id', 'cab_num']
-            self.tableWidget.setHorizontalHeaderLabels(["ID", "Номер кабинета"])
-        if result == "Персонал":
-            table = personnel
-            self.tableWidget.setColumnCount(4)
-            collums = ['id', 'id_spec', 'id_office', 'name']
-            self.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "ID специализации", "ID кабинета", "ФИО"])
-        if result == "Время работы":
-            table = working_hours
-            self.tableWidget.setColumnCount(6)
-            collums = ['id', 'id_day', 'id_personnel', 'work_hours', 'free_time', 'break2']
-            self.tableWidget.setHorizontalHeaderLabels(["ID", "ID дня", "ID персонала", "рабочее время", "свободное время", "перерыв"])
-        if result == "Приём":
-            table = reception
-            self.tableWidget.setColumnCount(7)
-            collums = ['id', 'id_patient', 'id_office', 'id_reception_status', 'id_personnel', 'id_spec', 'date']
-            self.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "ID кабинета", "ID статуса приёма", "ID персонала", "id специализации", "Дата"])
-        if result == "Мед книжка":
-            table = med_knigа
-            self.tableWidget.setColumnCount(3)
-            collums = ['id', 'id_patient', 'diagnoz']
-            self.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "Диагноз"])
-        line = session.query(table).count()
-        self.qTable = session.query(table).all()
-        self.tableWidget.setRowCount(line)
-        sort = [0] * line
-        j = 0
-        for i in collums:
-            if i != 'id':
-                self.comboBox_2.addItem(i)
-        for i in range(line):
-            self.comboBox_3.addItem(str(i + 1))
-        for row, form in enumerate(self.qTable):
-            col = 0
-            for c in collums:
-                for k, v in vars(form).items():
-                    if c == k:
-                        self.tableWidget.setItem(row, col, QTableWidgetItem(str(v)))
-                        col += 1
-        for i in session.query(table).all():
-            sort[j] = i.id
-            j += 1
-        self.comboBox_3.clear()
-        sort.sort()
-        for i in sort:
-            self.comboBox_3.addItem(str(i))
-        perem = 0
-        j = -1
-        for i in sort:
-            j += 1
-            for row, form in enumerate(self.qTable):
-                col = 0
-                for c in collums:
-                    for k, v in vars(form).items():
-                        if c == k:
-                            if c == 'id':
-                                perem = v
-                            if ((c == 'id') & (v == i)) | ((c != 'id') & (perem == i)):
-                                self.tableWidget.setItem(j, col, QTableWidgetItem(str(v)))
-                                col += 1
-        """print('44444444444444444444')
-        t = session.query(reception).all()
-        print('44444444444444444444')
-        t2 = session.query(working_hours).all()
-        print('444444444444444444442222222')
-        line = session.query(reception).count()
-        priyom = session.query(reception).all()
-        time1 = datetime.now()
-        print(f'sss=', datetime.isoweekday(time1))
-        print(f'time1=', time1)
-        print(f'priyom[0].date', priyom[0].date)
-        for i in range(line):
-            if time1 <= priyom[i].date:
-                query = session.query(reception).get(i + 1)
-                query.id_reception_status = 2
-            else:
-                query = session.query(reception).get(i + 1)
-                query.id_reception_status = 1"""
-
-        self.tableWidget.resizeColumnsToContents()
-
-
-
-        #print(f'дата= ',t[0].date,f'     дата2- ',t[1].date)
-        #d = date(2005, 7, 14)
-        #t2 = time(12, 30)
-        #print(f't3[0].work_hours[0]', t3[0].work_hours[0])
-        #print(f'sssssssssss',datetime.combine(d, t2))
-        #t1='2001-03-11 20:05:13'
-        #time1=datetime.now()
-        #print(time1)
-        #print('3333333333')
-        ##dt = datetime.combine(d,datetime.strptime(t3[0].work_hours[0],"%H:%M:%S"))
-        #print('4444444444444')
-        #print(dt)
-        #if dt>dt:
-        #    print('1111111111')
-        #else:
-        #    print('2222222222')
-
-#####################     РАБОТАЕТ УДАЛЕНИЕ СТРОК
-        #session.query(patient).filter_by(id=5).delete(synchronize_session=False)
-        #session.commit()
-#####################     РАБОТАЕТ ДОБАВЛЕНИЕ СТРОК
-        #user_setting = patient(id=5, name='Билли')
-        #session.add(user_setting)
-        #session.commit()
-#####################     РАБОТАЕТ ОБНОВЛЕНИЕ СТРОК
-        #query = session.query(patient).filter(patient.id == 2).first()
-        #query.name = 'Черных Владимир Сергеевич'
-        #session.commit()
-#####################
-    def change_table(self):
-        self.statusbar.clearMessage()
-        if self.prov == 0:
-            self.transaction = conn.begin()
-            self.prov = 1
-        result = self.comboBox.currentText()
-        change = self.comboBox_4.currentText()
-        stlb = int(self.comboBox_3.currentText())
-        text = self.textBrowser.toPlainText()
-        table = patient
-        if result == "Пациенты":
-            table = patient
-        if result == "День":
-            table = day
-        if change == "Добавить строку":
-            line = session.query(table).count()
-            tabl = session.query(table).all()
-            print('ssssss')
-            f = 0  # флаг
-            free_id = 1  # свободный индекс
-            while f == 0:
-                print('1')
-                for i in range(line):
-                    print(f'table[i].id=',tabl[i].id)
-                    if free_id == tabl[i].id:
-                        f = 1
-                if f == 1:
-                    free_id = free_id + 1
-                    f = 0
-                else:
-                    f = 1
-            print(f'free id=', free_id)
-            new = patient(id=free_id, name=text)
-            session.add(new)
-        tabl = session.query(table).all()
-        if change == "Обновить элемент":
-            query = session.query(table).get(stlb)
-            query.name = text
-        if change == "Удалить строку":
-            session.query(table).filter_by(id=stlb).delete(synchronize_session=False)
-        self.write_table()
-
-    def confirm_change(self):
-        if self.prov != 0:
-            self.prov = 0
-            session.commit()
-            self.write_table()
-        else:
-            self.statusbar.showMessage("Сначала внесите изменение в таблицу")
-
-    def undo_change(self):
-        if self.prov != 0:
-            #self.transaction.rollback()
-            session.rollback()
-            self.prov = 0
-            self.write_table()
-        else:
-            self.statusbar.showMessage("Сначала внесите изменение в таблицу")
