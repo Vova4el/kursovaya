@@ -2,6 +2,7 @@
 from classes import *
 from Qt import *
 from Authentication import login_panell
+import classes
 from personalQT import personalUI
 
 
@@ -78,9 +79,9 @@ class admin_panel(QMainWindow):
                 ["ID", "ID пациента", "ID кабинета", "ID статуса приёма", "ID персонала", "ID специализации", "Дата"])
         if result == "Мед книжка":
             table = med_knigа
-            self.ui.tableWidget.setColumnCount(3)
-            collums = ['id', 'id_patient', 'diagnoz']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "Диагноз"])
+            self.ui.tableWidget.setColumnCount(4)
+            collums = ['id', 'id_patient','id_personnel', 'diagnoz']
+            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "ID персонала", "Диагноз"])
         line = session.query(table).count()
         self.ui.qTable = session.query(table).all()
         self.ui.tableWidget.setRowCount(line)
@@ -184,11 +185,6 @@ class admin_panel(QMainWindow):
         else:
             self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
 
-    def exit_db_panel(self):
-        self.hide()
-        self.ui.app.exit()
-
-
 #########################ПАНЕЛЬ_ДЛЯ_ПЕРСОНАЛА##########################################
 class personal_panel(QMainWindow):
     def __init__(self, parent=None):
@@ -253,17 +249,17 @@ class personal_panel(QMainWindow):
                 ["ID", "ID пациента", "ID кабинета", "ID статуса приёма", "ID персонала", "id специализации", "Дата"])
         if result == "Мед книжка":
             table = med_knigа
-            self.ui.tableWidget.setColumnCount(3)
-            collums = ['id', 'id_patient', 'diagnoz']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "Диагноз"])
+            self.ui.tableWidget.setColumnCount(4)
+            collums = ['id', 'id_patient', 'id_personnel', 'diagnoz']
+            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "ID персонала", "Диагноз"])
         line = session.query(table).count()
         self.ui.qTable = session.query(table).all()
         self.ui.tableWidget.setRowCount(line)
         sort = [0] * line
         j = 0
-        for i in collums:
-            if i != 'id':
-                self.ui.comboBox_2.addItem(i)
+        p = session.query(patient).all()
+        for i in range(session.query(patient).count()):
+                self.ui.comboBox_2.addItem(str(p[i].id))
         for i in range(line):
             self.ui.comboBox_3.addItem(str(i + 1))
         for row, form in enumerate(self.ui.qTable):
@@ -300,17 +296,14 @@ class personal_panel(QMainWindow):
         self.ui.statusbar.clearMessage()
         if self.ui.prov == 0:
             self.ui.prov = 1
-        result = self.ui.comboBox.currentText()
         change = self.ui.comboBox_4.currentText()
         stlb = int(self.ui.comboBox_3.currentText())
-        text = self.ui.textBrowser.toPlainText()
-        table = patient
+        p_id = (self.ui.comboBox_2.currentText())
+        text = self.ui.textEdit.toPlainText()
         try:
-            if result == "Мед книжка":
-                table = med_knigа
             if change == "Добавить строку":
-                line = session.query(table).count()
-                tabl = session.query(table).all()
+                line = session.query(med_knigа).count()
+                tabl = session.query(med_knigа).all()
                 f = 0  # флаг
                 free_id = 1  # свободный индекс
                 while f == 0:
@@ -322,14 +315,20 @@ class personal_panel(QMainWindow):
                         f = 0
                     else:
                         f = 1
-                new = table(id=free_id, addname=text)
+                new = med_knigа(id=free_id, id_patient=p_id,id_personnel=classes.glob_id,diagnoz=text)
                 session.add(new)
-            tabl = session.query(table).all()
             if change == "Обновить элемент":
-                query = session.query(table).get(stlb)
-                query.name = text
+                query = session.query(med_knigа).get(stlb)
+                if classes.glob_id == query.id_personnel:
+                    query.diagnoz = text
+                else:
+                    self.ui.statusbar.showMessage("Вы должны быть той же специальности, что и врач, написавший этот диагноз")
             if change == "Удалить строку":
-                session.query(table).filter_by(id=stlb).delete(synchronize_session=False)
+                query = session.query(med_knigа).get(stlb)
+                if classes.glob_id == query.id_personnel:
+                    session.query(med_knigа).filter_by(id=stlb).delete(synchronize_session=False)
+                else:
+                    self.ui.statusbar.showMessage("Вы должны быть той же специальности, что и врач, написавший этот диагноз")
             self.write_table()
 
         except:
@@ -350,10 +349,6 @@ class personal_panel(QMainWindow):
             self.write_table()
         else:
             self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
-
-    def exit_db_panel(self):
-        self.hide()
-        self.ui.app.exit()
 
 class log_panel(QMainWindow):
     def __init__(self, parent=None):
@@ -380,14 +375,10 @@ class log_panel(QMainWindow):
                         dialog = admin_panel(parent=self)
                         dialog.show()
                     if i.id_stat == 3:
-                        print('fffffff')
                         j = session.query(accounts).filter(accounts.login== log).first()
-                        print('fffffff')
                         print(j.id)
                         p = session.query(personnel).filter(personnel.id_acc== j.id).first()
-                        print(p)
-                        glob_id= p.id
-                        print(glob_id)
+                        classes.glob_id= p.id
                         dialog = personal_panel(parent=self)
                         dialog.show()
                 else:
