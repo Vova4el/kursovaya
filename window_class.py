@@ -123,15 +123,10 @@ class admin_panel(QMainWindow):
         self.ui.tableWidget.resizeColumnsToContents()
 
     def change_table(self):
-        print('1')
         self.ui.statusbar.clearMessage()
-        print('2')
         if self.ui.prov == 0:
-            print('3')
             self.ui.prov = 1
-        print('5')
         result = self.ui.comboBox.currentText()
-        print('6')
         change = self.ui.comboBox_4.currentText()
         stlb = int(self.ui.comboBox_3.currentText())
         text = self.ui.textBrowser.toPlainText()
