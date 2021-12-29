@@ -32,7 +32,7 @@ class accounts(Base):
     id_stat = Column(Integer, ForeignKey('user_status.id'))
 
     def __repr__(self):
-        return f'{self.id} {self.login} {self.password} {self.stat_id}'
+        return f'{self.id} {self.login} {self.password} {self.id_stat}'
 
 #######################СТАТУС_ПРИЁМА#############################
 
@@ -105,13 +105,13 @@ class working_hours(Base):
     __tablename__ = 'working_hours'
     id = Column(Integer, primary_key=True)
     id_day = Column(Integer, ForeignKey('day.id'))
-    id_personnel = Column(Integer, ForeignKey('personnel.id'))
+    id_spec = Column(Integer, ForeignKey('specialization.id'))
     work_hours = Column(String)
     free_time = Column(String)
     break_time = Column(String)
 
     def __repr__(self):
-        return f'{self.id} {self.id_day} {self.id_personnel} {self.work_hours} {self.free_time} {self.break_time}'
+        return f'{self.id} {self.id_day} {self.id_spec} {self.work_hours} {self.free_time} {self.break_time}'
 
 #######################Приём#############################
 
@@ -123,7 +123,7 @@ class reception(Base):
     id_reception_status = Column(Integer, ForeignKey('reception_status.id'))
     id_personnel = Column(Integer, ForeignKey('personnel.id'))
     id_spec = Column(Integer, ForeignKey('specialization.id'))
-    date = Column(DATETIME)
+    date = Column(String)
 
     def __repr__(self):
         return f'{self.id} {self.id_patient} {self.id_office} {self.id_reception_status} {self.id_personnel} {self.id_spec} {self.date}'

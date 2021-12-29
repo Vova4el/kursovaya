@@ -1,5 +1,6 @@
 
 from classes import *
+from datetime import datetime, date, time
 from Qt import *
 from Authentication import login_panell
 import classes
@@ -68,9 +69,9 @@ class admin_panel(QMainWindow):
         if result == "Время работы":
             table = working_hours
             self.ui.tableWidget.setColumnCount(6)
-            collums = ['id', 'id_day', 'id_personnel', 'work_hours', 'free_time', 'break_time']
+            collums = ['id', 'id_day', 'id_spec', 'work_hours', 'free_time', 'break_time']
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "ID дня", "ID персонала", "рабочее время", "свободное время", "перерыв"])
+                ["ID", "ID дня", "ID специализации", "рабочее время", "свободное время", "перерыв"])
         if result == "Приём":
             table = reception
             self.ui.tableWidget.setColumnCount(7)
@@ -130,51 +131,211 @@ class admin_panel(QMainWindow):
         change = self.ui.comboBox_4.currentText()
         stlb = int(self.ui.comboBox_3.currentText())
         text = self.ui.textEdit.toPlainText()
+        lis = text.split(',')
         table = patient
         try:
             if result == "Аккаунты":
                 table = accounts
+                tabl = session.query(table).all()
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    query.name = text
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, login=lis[0], password=lis[1], id_stat=int(lis[2]))
+                    session.add(new)
             if result == "Статусы пользователей":
                 table = accounts
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, status=text)
+                    session.add(new)
             if result == "Пациенты":
                 table = patient
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, status=text)
+                    session.add(new)
             if result == "День":
                 table = day
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, name=text)
+                    session.add(new)
             if result == "Специализация":
                 table = specialization
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, name_spec=text)
+                    session.add(new)
             if result == "Статус приёма":
                 table = reception_status
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, name=text)
+                    session.add(new)
             if result == "Кабинеты":
                 table = offices
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, cab_num=int(text))
+                    session.add(new)
             if result == "Персонал":
                 table = personnel
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, id_spec=int(lis[0]), id_office=int(lis[1]), name= lis[2], id_acc=int(lis[3]))
+                    session.add(new)
             if result == "Время работы":
                 table = working_hours
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, id_day=int(lis[0]), id_spec=int(lis[1]), work_hours= [lis[2],lis[3]], free_time=[lis[4],lis[5]], break_time=[lis[6],lis[7]])
+                    session.add(new)
             if result == "Приём":
                 table = reception
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
+                            f = 1
+                    new = table(id=free_id, id_patient=int(lis[0]), id_office=int(lis[1]), id_reception_status= int(lis[2]), id_personnel=int(lis[3]), id_spec=int(lis[4]), date=lis[5]) #1,2,2,1,1,2006-12-14 20:15:00
+                    session.add(new)
             if result == "Мед книжка":
                 table = med_knigа
-            if change == "Добавить строку":
-                line = session.query(table).count()
-                tabl = session.query(table).all()
-                f = 0  # флаг
-                free_id = 1  # свободный индекс
-                while f == 0:
-                    for i in range(line):
-
-                        if free_id == tabl[i].id:
+                if change == "Добавить строку":
+                    line = session.query(table).count()
+                    tabl = session.query(table).all()
+                    f = 0  # флаг
+                    free_id = 1  # свободный индекс
+                    while f == 0:
+                        for i in range(line):
+                            if free_id == tabl[i].id:
+                                f = 1
+                        if f == 1:
+                            free_id = free_id + 1
+                            f = 0
+                        else:
                             f = 1
-                    if f == 1:
-                        free_id = free_id + 1
-                        f = 0
-                    else:
-                        f = 1
-                new = table(id=free_id, name=text)
-                session.add(new)
-            tabl = session.query(table).all()
-            if change == "Обновить элемент":
-                query = session.query(table).get(stlb)
-                query.name = text
+                    new = table(id=free_id, id_patient=int(lis[0]), id_personnel=int(lis[1]), diagnoz=lis[2])#id,id_patient, id_personnel, diagnoz
+                    session.add(new)
             if change == "Удалить строку":
                 session.query(table).filter_by(id=stlb).delete(synchronize_session=False)
             self.write_table()
@@ -251,9 +412,9 @@ class personal_panel(QMainWindow):
         if result == "Время работы":
             table = working_hours
             self.ui.tableWidget.setColumnCount(6)
-            collums = ['id', 'id_day', 'id_personnel', 'work_hours', 'free_time', 'break_time']
+            collums = ['id', 'id_day', 'id_spec', 'work_hours', 'free_time', 'break_time']
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "ID дня", "ID персонала", "рабочее время", "свободное время", "перерыв"])
+                ["ID", "ID дня", "ID специализации", "рабочее время", "свободное время", "перерыв"])
         if result == "Приём":
             table = reception
             self.ui.tableWidget.setColumnCount(7)
