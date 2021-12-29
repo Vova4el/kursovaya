@@ -715,34 +715,30 @@ class patient_panel(QMainWindow):
         stlb = int(self.ui.comboBox_3.currentText())
         text = self.ui.textEdit.toPlainText()
         lis = text.split(',')
-        try:
-            if change == "Добавить строку":
-                line = session.query(reception).count()
-                tabl = session.query(reception).all()
-                f = 0  # флаг
-                free_id = 1  # свободный индекс
-                while f == 0:
-                    for i in range(line):
-                        if free_id == tabl[i].id:
-                            f = 1
-                    if f == 1:
-                        free_id = free_id + 1
-                        f = 0
-                    else:
+        if change == "Добавить строку":
+            line = session.query(reception).count()
+            tabl = session.query(reception).all()
+            f = 0  # флаг
+            free_id = 1  # свободный индекс
+            while f == 0:
+                for i in range(line):
+                    if free_id == tabl[i].id:
                         f = 1
-                pers=session.query(personnel).filter(personnel.id==int(list[0])).first()
-                new = reception(id=free_id, id_patient=classes.glob_id, id_office=pers.id_office, id_reception_status=2, id_personnel=int(lis[0]), id_spec=pers.id_spec, date=lis[1])
-                session.add(new)
-            if change == "Отменить запись на приём":
-                query = session.query(reception).get(stlb)
-                if classes.glob_id == query.id_patient:
-                    query.id_reception_status = 3
+                if f == 1:
+                    free_id = free_id + 1
+                    f = 0
                 else:
-                    self.ui.statusbar.showMessage("Вы не можете отменить чужую запись на приём")
-            self.write_table()
-
-        except:
-            self.ui.statusbar.showMessage("Произошла ошибка")
+                    f = 1
+            pers = session.query(personnel).filter(personnel.id == int(lis[0])).first()
+            new = reception(id=free_id, id_patient=classes.glob_id, id_office=pers.id_office, id_reception_status=2, id_personnel=int(lis[0]), id_spec=pers.id_spec, date=lis[1])
+            session.add(new)
+        if change == "Отменить запись на приём":
+            query = session.query(reception).get(stlb)
+            if classes.glob_id == query.id_patient:
+                query.id_reception_status = 3
+            else:
+                self.ui.statusbar.showMessage("Вы не можете отменить чужую запись на приём")
+        self.write_table()
 
     def autoplay_spec(self):
         if self.ui.prov == 0:
@@ -777,20 +773,11 @@ class patient_panel(QMainWindow):
                     bt1 = datetime.strptime(wh[j].break_time[0], '%H:%M:%S')
                     bt2 = datetime.strptime(wh[j].break_time[1], '%H:%M:%S')
                     if (wh1.time()<=dt.time())&(wh2.time()>=dt.time())&((bt1.time()>dt.time())|(bt2.time()<dt.time())):
-                        print(1)
                         tabl2 =session.query(personnel).filter(personnel.id_spec == spec_id)
-                        print(3)
-                        print(f'spec_id=', spec_id)
                         line2 = session.query(personnel).filter(personnel.id_spec == spec_id).count()
-                        print(4)
-                        print(f'line2=',line2)
                         for k in range(line2):
-                            print(1)
                             l1 = session.query(reception).filter(reception.id_personnel==tabl2[k].id).first()
-                            print(2)
-                            print(l1.date)
                             l2 = session.query(reception).filter(reception.id_office==l1.id_office,datetime.strptime(l1.date,'%Y-%m-%d %H:%M:%S')==dt).count()
-                            print(5)
                             if l2 == 0:
                                 res =dt
                                 d_per = tabl2[k].id
@@ -865,15 +852,13 @@ class log_panel(QMainWindow):
                         dialog.show()
                     if i.id_stat == 2:
                         j = session.query(accounts).filter(accounts.login== log).first()
-                        print(j.id)
                         p = session.query(patient).filter(patient.id_acc== j.id).first()
                         classes.glob_id= p.id
-                        print(classes.glob_id)
                         dialog = patient_panel(parent=self)
                         dialog.show()
                     if i.id_stat == 3:
                         j = session.query(accounts).filter(accounts.login== log).first()
-                        print(j.id)
+
                         p = session.query(personnel).filter(personnel.id_acc== j.id).first()
                         classes.glob_id= p.id
                         dialog = personal_panel(parent=self)
