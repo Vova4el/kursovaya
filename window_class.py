@@ -4,6 +4,9 @@ import classes
 from personalQT import personalUI
 from patientQT import patientUI
 from datetime import timedelta,datetime, date, time
+import random
+import docx
+import pandas as pd
 
 ################ОКНО_АДМИНА##########################
 class admin_panel(QMainWindow):
@@ -15,6 +18,270 @@ class admin_panel(QMainWindow):
         self.ui.pushButton_2.clicked.connect(lambda: self.change_table())
         self.ui.pushButton_3.clicked.connect(lambda: self.confirm_change())
         self.ui.pushButton_4.clicked.connect(lambda: self.undo_change())
+        self.ui.pushButton_5.clicked.connect(lambda: self.vugr_db())
+        self.ui.comboBox_5.addItem("В Docx")
+        self.ui.comboBox_5.addItem("В Xlsx")
+
+    # Выгрузка БД в Docx или Xlsx
+    def vugr_db(self):
+        if self.ui.comboBox_5.currentText() == "В Docx":
+            mydoc = docx.Document()
+            for i in range(12):
+                table_1 = mydoc.add_table(rows=0, cols=0, style='Table Grid')
+                table = user_status
+                line = 0
+                collums = []
+                if i == 1:
+                    mydoc.add_paragraph("Таблица статусов пользователей (user_status):")
+                    table_1 = mydoc.add_table(rows=session.query(user_status).count() + 1, cols=2, style='Table Grid')
+                    table = user_status
+                    collums = ['id', 'status']
+                if i == 2:
+                    mydoc.add_paragraph("Таблица пациенитов (patient):")
+                    table_1 = mydoc.add_table(rows=session.query(patient).count() + 1, cols=3, style='Table Grid')
+                    table = patient
+                    collums = ['id', 'name', 'id_acc']
+                if i == 3:
+                    mydoc.add_paragraph("Таблица мед книжки (med_knigа):")
+                    table_1 = mydoc.add_table(rows=session.query(med_knigа).count() + 1, cols=4, style='Table Grid')
+                    table = med_knigа
+                    collums = ['id', 'id_patient', 'id_personnel', 'diagnoz']
+                if i == 4:
+                    mydoc.add_paragraph("Таблица дней (day):")
+                    table_1 = mydoc.add_table(rows=session.query(day).count() + 1, cols=2, style='Table Grid')
+                    table = day
+                    collums = ['id', 'name']
+                if i == 5:
+                    mydoc.add_paragraph("Таблица специализаций (specialization):")
+                    table_1 = mydoc.add_table(rows=session.query(specialization).count() + 1, cols=2, style='Table Grid')
+                    table = specialization
+                    collums = ['id', 'name_spec']
+                if i == 6:
+                    mydoc.add_paragraph("Таблица аккаунтов (accounts):")
+                    table_1 = mydoc.add_table(rows=session.query(accounts).count() + 1, cols=4, style='Table Grid')
+                    table = accounts
+                    collums = ['id', 'login', 'password', 'id_stat']
+                if i == 7:
+                    mydoc.add_paragraph("Таблица статуса приёма (reception_status):")
+                    table_1 = mydoc.add_table(rows=session.query(reception_status).count() + 1, cols=2, style='Table Grid')
+                    table = reception_status
+                    collums = ['id', 'name']
+                if i == 8:
+                    mydoc.add_paragraph("Таблица кабинетов (offices):")
+                    table_1 = mydoc.add_table(rows=session.query(offices).count() + 1, cols=2, style='Table Grid')
+                    table = offices
+                    collums = ['id', 'cab_num']
+                if i == 9:
+                    mydoc.add_paragraph("Рабочее время (working_hours):")
+                    table_1 = mydoc.add_table(rows=session.query(working_hours).count() + 1, cols=6, style='Table Grid')
+                    table = working_hours
+                    collums = ['id', 'id_day', 'id_spec', 'work_hours', 'free_time', 'break_time']
+                if i == 10:
+                    mydoc.add_paragraph("Таблица записи на приём к врачу (reception):")
+                    table_1 = mydoc.add_table(rows=session.query(reception).count() + 1, cols=7, style='Table Grid')
+                    table = reception
+                    collums = ['id', 'id_patient', 'id_office', 'id_reception_status', 'id_personnel', 'id_spec','date']
+                if i == 11:
+                    mydoc.add_paragraph("Таблица записи на приём к врачу (personnel):")
+                    table_1 = mydoc.add_table(rows=session.query(personnel).count() + 1, cols=5, style='Table Grid')
+                    table = personnel
+                    collums = ['id', 'id_spec', 'id_office', 'name', 'id_acc']
+                line = session.query(table).count()
+                self.ui.qTable = session.query(table).all()
+                z = 0
+                for j in collums:
+                    table_1.cell(0, z).text = j
+                    z += 1
+                sort = [0] * line
+                z = 0
+                for j in session.query(table).all():
+                    sort[z] = j.id
+                    z += 1
+                sort.sort()
+                perem = 0
+                z = 0
+                for j in sort:
+                    z += 1
+                    for row, form in enumerate(self.ui.qTable):
+                        col = 0
+                        for c in collums:
+                            for k, v in vars(form).items():
+                                if c == k:
+                                    if c == 'id':
+                                        perem = v
+                                    if ((c == 'id') & (v == j)) | ((c != 'id') & (perem == j)):
+                                        table_1.cell(z, col).text = str(v)
+                                        col += 1
+
+            mydoc.save("C:/Users/voffc/OneDrive/Desktop/database.docx")
+        else:
+            table1 = pd.DataFrame({})
+            table2 = pd.DataFrame({})
+            table3 = pd.DataFrame({})
+            table4 = pd.DataFrame({})
+            table5 = pd.DataFrame({})
+            table6 = pd.DataFrame({})
+            table7 = pd.DataFrame({})
+            table8 = pd.DataFrame({})
+            table9 = pd.DataFrame({})
+            table10 = pd.DataFrame({})
+            table11 = pd.DataFrame({})
+            for i in range(11):
+                print(f'-----', i, f'------')
+                if i == 0:
+                    count = session.query(personnel).count()
+                    collum1 = [0] * count
+                    collum2 = [0] * count
+                    collum3 = [0] * count
+                    collum4 = [""] * count
+                    collum5 = [0] * count
+                    z = 0
+                    for j in session.query(personnel).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.id_spec
+                        collum3[z] = j.id_office
+                        collum4[z] = j.name
+                        collum5[z] = j.id_acc
+                        z += 1
+                    table1 = pd.DataFrame({'id': collum1, 'id_spec': collum2, 'id_office': collum3, 'name': collum4, 'id_acc':collum5})
+                if i == 1:
+                    count = session.query(patient).count()
+                    collum1 = [0] * count
+                    collum2 = [""] * count
+                    collum3 = [0] * count
+                    z = 0
+                    for j in session.query(patient).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.name
+                        collum3[z] = j.id_acc
+                        z += 1
+                    table2 = pd.DataFrame({'id': collum1, 'name': collum2,'id_acc': collum3})
+                if i == 2:
+                    count = session.query(user_status).count()
+                    collum1 = [0] * count
+                    collum2 = [""] * count
+                    z = 0
+                    for j in session.query(user_status).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.status
+                        z += 1
+                    table3 = pd.DataFrame({'id': collum1, 'status': collum2})
+                if i == 3:
+                    count = session.query(offices).count()
+                    collum1 = [0] * count
+                    collum2 = [0] * count
+                    z = 0
+                    for j in session.query(offices).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.cab_num
+                        z += 1
+                    table4 = pd.DataFrame({'id': collum1, 'cab_num': collum2})
+                if i == 4:
+                    count = session.query(working_hours).count()
+                    collum1 = [0] * count
+                    collum2 = [0] * count
+                    collum3 = [0] * count
+                    collum4 = [""] * count
+                    collum5 = [""] * count
+                    collum6 = [""] * count
+                    z = 0
+                    for j in session.query(working_hours).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.id_day
+                        collum3[z] = j.id_spec
+                        collum4[z] = j.work_hours
+                        collum5[z] = j.free_time
+                        collum6[z] = j.break_time
+                        z += 1
+                    table5 = pd.DataFrame({'id': collum1, 'id_day': collum2, 'id_spec': collum3, 'work_hours': collum4,
+                                           'free_time': collum5, 'break_time': collum6})
+                if i == 5:
+                    count = session.query(reception).count()
+                    collum1 = [0] * count
+                    collum2 = [0] * count
+                    collum3 = [0] * count
+                    collum4 = [0] * count
+                    collum5 = [0] * count
+                    collum6 = [0] * count
+                    collum7 = [""] * count
+                    z = 0
+                    for j in session.query(reception).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.id_patient
+                        collum3[z] = j.id_office
+                        collum4[z] = j.id_reception_status
+                        collum5[z] = j.id_personnel
+                        collum6[z] = j.id_spec
+                        collum7[z] = j.date
+                        z += 1
+                    table6 = pd.DataFrame({'id': collum1, 'id_patient': collum2, 'id_office': collum3, 'id_reception_status': collum4, 'id_personnel': collum5, 'id_spec': collum6, 'date':collum7})
+                if i == 6:
+                    count = session.query(accounts).count()
+                    collum1 = [0] * count
+                    collum2 = [""] * count
+                    collum3 = [""] * count
+                    collum4 = [0] * count
+                    z = 0
+                    for j in session.query(accounts).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.login
+                        collum3[z] = j.password
+                        collum4[z] = j.id_stat
+                        z += 1
+                    table7 = pd.DataFrame({'id': collum1, 'login': collum2, 'password': collum3, 'id_stat': collum4})
+                if i == 7:
+                    count = session.query(med_knigа).count()
+                    collum1 = [0] * count
+                    collum2 = [""] * count
+                    collum3 = [0] * count
+                    collum4 = [""] * count
+                    z = 0
+                    for j in session.query(med_knigа).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.id_patient
+                        collum3[z] = j.id_personnel
+                        collum4[z] = j.diagnoz
+                        z += 1
+                    table8 = pd.DataFrame({'id': collum1, 'id_patient': collum2, 'id_personnel': collum3,
+                                           'diagnoz': collum4})
+                if i == 8:
+                    count = session.query(day).count()
+                    collum1 = [0] * count
+                    collum2 = [""] * count
+                    z = 0
+                    for j in session.query(day).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.name
+                        z += 1
+                    table9 = pd.DataFrame({'id': collum1, 'name': collum2})
+                if i == 9:
+                    count = session.query(specialization).count()
+                    collum1 = [0] * count
+                    collum2 = [""] * count
+                    z = 0
+                    for j in session.query(specialization).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.name_spec
+                        z += 1
+                    table10 = pd.DataFrame({'id': collum1, 'name_spec': collum2})
+                if i == 10:
+                    count = session.query(reception_status).count()
+                    collum1 = [0] * count
+                    collum2 = [""] * count
+                    z = 0
+                    for j in session.query(reception_status).all():
+                        collum1[z] = j.id
+                        collum2[z] = j.name
+                        z += 1
+                    table11 = pd.DataFrame({'id': collum1, 'name': collum2})
+            salary_sheets = {'Персонал': table1, 'Пациенты': table2, 'Статусы пользователей': table3,
+                             'Кабинеты': table4, 'Рабочее время': table5, 'Запись на приём': table6,
+                             'Аккаунты': table7, 'Мед книжка': table8, 'Дни': table9, 'Специальность': table10,
+                             'Статусы записей на приём': table11}
+            writer = pd.ExcelWriter('./database123456.xlsx', engine='xlsxwriter')
+            for sheet_name in salary_sheets.keys():
+                salary_sheets[sheet_name].to_excel(writer, sheet_name=sheet_name, index=False)
+            writer.save()
 
     def write_table(self):
         self.ui.comboBox_2.clear()
@@ -752,7 +1019,6 @@ class patient_panel(QMainWindow):
         tabl = session.query(reception).filter(reception.id_spec== spec_id).all()
         line = session.query(reception).filter(reception.id_spec== spec_id).count()
         f=0
-        id_per = 0
         while f==0:
             f2=0
             while f2==0:
@@ -783,6 +1049,17 @@ class patient_panel(QMainWindow):
                                 d_per = tabl2[k].id
                                 n_c = tabl2[k].id_office
                                 f=1
+            else:
+                tabl2 = session.query(personnel).filter(personnel.id_spec == spec_id)
+                line2 = session.query(personnel).filter(personnel.id_spec == spec_id).count()
+                for k in range(line2):
+                    l1 = session.query(reception).filter(reception.id_office == tabl2[k].id_office).first()
+                    l2 = session.query(reception).filter(reception.id_office == l1.id_office, datetime.strptime(l1.date, '%Y-%m-%d %H:%M:%S') == dt).count()
+                    if l2 == 0:
+                        res = dt
+                        d_per = tabl2[k].id
+                        n_c = tabl2[k].id_office
+                        f = 1
             dt = dt + timedelta(hours=1)
         tabl = session.query(reception).all()
         line = session.query(reception).count()
@@ -800,13 +1077,6 @@ class patient_panel(QMainWindow):
         new = reception(id=free_id, id_patient=classes.glob_id, id_office=n_c, id_reception_status=1, id_personnel=d_per, id_spec=spec_id, date=str(res))
         session.add(new)
         self.write_table()
-    def confirm_change(self):
-        if self.ui.prov != 0:
-            session.commit()
-            self.ui.prov = 0
-            self.write_table()
-        else:
-            self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
 
     def confirm_change(self):
         if self.ui.prov != 0:
@@ -857,9 +1127,8 @@ class log_panel(QMainWindow):
                         dialog = patient_panel(parent=self)
                         dialog.show()
                     if i.id_stat == 3:
-                        j = session.query(accounts).filter(accounts.login== log).first()
-
-                        p = session.query(personnel).filter(personnel.id_acc== j.id).first()
+                        j = session.query(accounts).filter(accounts.login == log).first()
+                        p = session.query(personnel).filter(personnel.id_acc == j.id).first()
                         classes.glob_id= p.id
                         dialog = personal_panel(parent=self)
                         dialog.show()

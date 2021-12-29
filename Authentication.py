@@ -119,7 +119,7 @@ class login_panell:
         self.comboBox.addItem("3")
         p = session.query(offices).all()
         for i in range(session.query(offices).count()):
-            self.comboBox_2.addItem(str(p[i].id))
+            self.comboBox_3.addItem(str(p[i].id))
         p = session.query(specialization).all()
         for i in range(session.query(specialization).count()):
-            self.comboBox_3.addItem(str(p[i].id))
+            self.comboBox_2.addItem(str(p[i].id))
