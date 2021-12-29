@@ -18,7 +18,7 @@ glob_id=0
 class user_status(Base):
     __tablename__ = 'user_status'
     id = Column(Integer, primary_key=True)
-    status = Column(String(40))
+    status = Column(String)
 
     def __repr__(self):
         return f'{self.id} {self.status}'
@@ -28,7 +28,7 @@ class accounts(Base):
     __tablename__ = 'accounts'
     id = Column(Integer, primary_key=True)
     login = Column(String(40))
-    password = Column(String(10))
+    password = Column(String)
     id_stat = Column(Integer, ForeignKey('user_status.id'))
 
     def __repr__(self):

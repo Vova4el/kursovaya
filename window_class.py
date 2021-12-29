@@ -30,7 +30,7 @@ class admin_panel(QMainWindow):
             collums = ['id', 'login', 'password', 'id_stat']
             self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "Логин", "Пароль", "ID статуса"])
         if result == "Статусы пользователей":
-            table = accounts
+            table = user_status
             self.ui.tableWidget.setColumnCount(2)
             collums = ['id', 'status']
             self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "Cтатус"])
@@ -129,6 +129,7 @@ class admin_panel(QMainWindow):
             self.ui.prov = 1
         result = self.ui.comboBox.currentText()
         change = self.ui.comboBox_4.currentText()
+        colona = self.ui.comboBox_2.currentText()
         stlb = int(self.ui.comboBox_3.currentText())
         text = self.ui.textEdit.toPlainText()
         lis = text.split(',')
@@ -136,10 +137,14 @@ class admin_panel(QMainWindow):
         try:
             if result == "Аккаунты":
                 table = accounts
-                tabl = session.query(table).all()
                 if change == "Обновить элемент":
                     query = session.query(table).get(stlb)
-                    query.name = text
+                    if colona == "login":
+                        query.login = text
+                    if colona == "password":
+                        query.password = text
+                    if colona == "id_stat":
+                        query.id_stat = int(text)
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -157,7 +162,11 @@ class admin_panel(QMainWindow):
                     new = table(id=free_id, login=lis[0], password=lis[1], id_stat=int(lis[2]))
                     session.add(new)
             if result == "Статусы пользователей":
-                table = accounts
+                table = user_status
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "status":
+                        query.status = text
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -176,6 +185,12 @@ class admin_panel(QMainWindow):
                     session.add(new)
             if result == "Пациенты":
                 table = patient
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "name":
+                        query.name = text
+                    if colona == "id_acc":
+                        query.id_acc = int(text)
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -190,10 +205,14 @@ class admin_panel(QMainWindow):
                             f = 0
                         else:
                             f = 1
-                    new = table(id=free_id, status=text)
+                    new = table(id=free_id, name=lis[0],id_acc = int(lis[1]))
                     session.add(new)
             if result == "День":
                 table = day
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "name":
+                        query.name = text
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -212,6 +231,10 @@ class admin_panel(QMainWindow):
                     session.add(new)
             if result == "Специализация":
                 table = specialization
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "name_spec":
+                        query.name_spec = text
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -230,6 +253,10 @@ class admin_panel(QMainWindow):
                     session.add(new)
             if result == "Статус приёма":
                 table = reception_status
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "name":
+                        query.name = text
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -248,6 +275,10 @@ class admin_panel(QMainWindow):
                     session.add(new)
             if result == "Кабинеты":
                 table = offices
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "cab_num":
+                        query.cab_num = int(text)
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -266,6 +297,16 @@ class admin_panel(QMainWindow):
                     session.add(new)
             if result == "Персонал":
                 table = personnel
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "id_spec":
+                        query.id_spec = int(text)
+                    if colona == "id_office":
+                        query.id_office = int(text)
+                    if colona == "name":
+                        query.name = text
+                    if colona == "id_acc":
+                        query.id_acc = int(text)
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -284,6 +325,16 @@ class admin_panel(QMainWindow):
                     session.add(new)
             if result == "Время работы":
                 table = working_hours
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "id_day":
+                        query.id_day = int(text)
+                    if colona == "work_hours":
+                        query.work_hours= [lis[0],lis[1]]
+                    if colona == "free_time":
+                        query.free_time = [lis[0],lis[1]]
+                    if colona == "break_time":
+                        query.break_time = [lis[0],lis[1]]
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -302,6 +353,20 @@ class admin_panel(QMainWindow):
                     session.add(new)
             if result == "Приём":
                 table = reception
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "id_patient":
+                        query.id_patient = int(text)
+                    if colona == "id_office":
+                        query.id_office= int(text)
+                    if colona == "id_reception_status":
+                        query.id_reception_status = int(text)
+                    if colona == "id_personnel":
+                        query.id_personnel = int(text)
+                    if colona == "id_spec":
+                        query.id_spec = int(text)
+                    if colona == "date":
+                        query.date = text
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
@@ -320,6 +385,14 @@ class admin_panel(QMainWindow):
                     session.add(new)
             if result == "Мед книжка":
                 table = med_knigа
+                if change == "Обновить элемент":
+                    query = session.query(table).get(stlb)
+                    if colona == "id_patient":
+                        query.id_patient = int(text)
+                    if colona == "id_personnel":
+                        query.id_personnel= int(text)
+                    if colona == "diagnoz":
+                        query.diagnoz = text
                 if change == "Добавить строку":
                     line = session.query(table).count()
                     tabl = session.query(table).all()
