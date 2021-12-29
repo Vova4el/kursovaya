@@ -129,13 +129,31 @@ class admin_panel(QMainWindow):
         result = self.ui.comboBox.currentText()
         change = self.ui.comboBox_4.currentText()
         stlb = int(self.ui.comboBox_3.currentText())
-        text = self.ui.textBrowser.toPlainText()
+        text = self.ui.textEdit.toPlainText()
         table = patient
         try:
+            if result == "Аккаунты":
+                table = accounts
+            if result == "Статусы пользователей":
+                table = accounts
             if result == "Пациенты":
                 table = patient
             if result == "День":
                 table = day
+            if result == "Специализация":
+                table = specialization
+            if result == "Статус приёма":
+                table = reception_status
+            if result == "Кабинеты":
+                table = offices
+            if result == "Персонал":
+                table = personnel
+            if result == "Время работы":
+                table = working_hours
+            if result == "Приём":
+                table = reception
+            if result == "Мед книжка":
+                table = med_knigа
             if change == "Добавить строку":
                 line = session.query(table).count()
                 tabl = session.query(table).all()
@@ -293,7 +311,7 @@ class personal_panel(QMainWindow):
             self.ui.prov = 1
         change = self.ui.comboBox_4.currentText()
         stlb = int(self.ui.comboBox_3.currentText())
-        p_id = (self.ui.comboBox_2.currentText())
+        p_id = self.ui.comboBox_2.currentText()
         text = self.ui.textEdit.toPlainText()
         try:
             if change == "Добавить строку":
@@ -378,7 +396,8 @@ class log_panel(QMainWindow):
                         dialog.show()
                 else:
                     self.ui.statusbar.showMessage("Введён неверный пароль")
-        self.ui.statusbar.showMessage("Введено несуществующее имя пользователя")
+                    return
+            self.ui.statusbar.showMessage("Введено несуществующее имя пользователя")
 
     def create_acc(self):
         log = self.ui.textEdit.toPlainText()
@@ -393,10 +412,49 @@ class log_panel(QMainWindow):
             if log == i.login:
                 self.ui.statusbar.showMessage("Пользователь с таким логином уже существует")
                 return
-        user_setting = accounts(id=session.query(accounts).count() + 1, login=log, password=pasw,
-                                stat_id=int(2))
-        session.add(user_setting)
-        session.commit()
-        self.hide()
-        dialog = admin_panel(parent=self)
-        dialog.show()
+        n_id = int(self.ui.comboBox.currentText())
+        line = session.query(accounts).count()
+        tabl = session.query(accounts).all()
+        f = 0  # флаг
+        free_id = 1  # свободный индекс
+        while f == 0:
+            for i in range(line):
+                if free_id == tabl[i].id:
+                    f = 1
+            if f == 1:
+                free_id = free_id + 1
+                f = 0
+            else:
+                f = 1
+        if n_id == 1:
+            user_setting = accounts(id=free_id, login=log, password=pasw, id_stat=1)
+            session.add(user_setting)
+            session.commit()
+            self.hide()
+            dialog = admin_panel(parent=self)
+            dialog.show()
+        if n_id == 3:
+            user_setting = accounts(id=free_id, login=log, password=pasw, id_stat=3)
+            session.add(user_setting)
+            session.commit()
+            f = 0  # флаг
+            line = session.query(personnel).count()
+            tabl = session.query(personnel).all()
+            free_id2 = 1  # свободный индекс
+            while f == 0:
+                for i in range(line):
+                    if free_id2 == tabl[i].id:
+                        f = 1
+                if f == 1:
+                    free_id2 = free_id2 + 1
+                    f = 0
+                else:
+                    f = 1
+            print(f'of=',int(self.ui.comboBox_3.currentText()))
+            print(f'spec=', int(self.ui.comboBox_2.currentText()))
+            user_setting = personnel(id=free_id2, id_spec=int(self.ui.comboBox_2.currentText()), id_office= int(self.ui.comboBox_3.currentText()),name=self.ui.textEdit_3.toPlainText(), id_acc=free_id) #id,id_spec,id_office, name,id_acc
+            session.add(user_setting)
+            session.commit()
+            self.hide()
+            dialog = personal_panel(parent=self)
+            dialog.show()

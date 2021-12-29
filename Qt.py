@@ -10,7 +10,7 @@ class Ui_MainWindow:
         self.ui = None
         self.prov = 0
         self.transaction = None
-        self.textBrowser = None
+        self.textEdit = None
         self.app = QtWidgets.QApplication(sys.argv)
         self.MainWindow = None
         self.centralwidget = None
@@ -23,7 +23,7 @@ class Ui_MainWindow:
         self.comboBox = None
         self.tableWidget = None
         self.pushButton = None
-        self.textBrowser = None
+        self.textEdit = None
         self.label_4 = None
         self.label_3 = None
         self.label_2 = None
@@ -80,11 +80,11 @@ class Ui_MainWindow:
         self.pushButton.setMaximumSize(QtCore.QSize(200, 30))
         self.pushButton.setObjectName("pushButton")
         self.gridLayout.addWidget(self.pushButton, 21, 2, 1, 1)
-        self.textBrowser = QtWidgets.QTextEdit(self.centralwidget)
-        self.textBrowser.setMinimumSize(QtCore.QSize(200, 100))
-        self.textBrowser.setMaximumSize(QtCore.QSize(200, 100))
-        self.textBrowser.setObjectName("textBrowser")
-        self.gridLayout.addWidget(self.textBrowser, 20, 2, 1, 1)
+        self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
+        self.textEdit.setMinimumSize(QtCore.QSize(200, 100))
+        self.textEdit.setMaximumSize(QtCore.QSize(200, 100))
+        self.textEdit.setObjectName("textEdit")
+        self.gridLayout.addWidget(self.textEdit, 20, 2, 1, 1)
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setMinimumSize(QtCore.QSize(200, 20))
         self.label_4.setMaximumSize(QtCore.QSize(200, 20))
