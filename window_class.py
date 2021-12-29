@@ -1,7 +1,3 @@
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog
-from PyQt5.QtWidgets import QTableWidgetItem
-from classes import *
 from Qt import *
 from Authentication import login_panell
 import classes
@@ -617,6 +613,7 @@ class patient_panel(QMainWindow):
 
     def write_table(self):
         self.ui.comboBox_3.clear()
+        self.ui.comboBox_5.clear()
         self.ui.tableWidget.clearSelection()
         result = self.ui.comboBox.currentText()
         line = 0
@@ -756,7 +753,7 @@ class patient_panel(QMainWindow):
         dt= datetime.combine(dt.date(),t2)
         while datetime.now()>=dt:
             dt = dt + timedelta(hours=1)
-        tabl = session.query(reception).filter(reception.id_spec== spec_id)
+        tabl = session.query(reception).filter(reception.id_spec== spec_id).all()
         line = session.query(reception).filter(reception.id_spec== spec_id).count()
         f=0
         id_per = 0
@@ -764,7 +761,6 @@ class patient_panel(QMainWindow):
             f2=0
             while f2==0:
                 for i in range(line):
-                    print(f'dt=',dt,f'datetime.strptime(tabl[i].date,%Y-%m-%d %H:%M:%S)',datetime.strptime(tabl[i].date,'%Y-%m-%d %H:%M:%S'))
                     if dt==datetime.strptime(tabl[i].date,'%Y-%m-%d %H:%M:%S'):
                         f2=1
                 if f2==1:
@@ -782,16 +778,24 @@ class patient_panel(QMainWindow):
                     bt2 = datetime.strptime(wh[j].break_time[1], '%H:%M:%S')
                     if (wh1.time()<=dt.time())&(wh2.time()>=dt.time())&((bt1.time()>dt.time())|(bt2.time()<dt.time())):
                         print(1)
-                        l1 = session.query(reception).filter(reception.id==tabl[i].id_personnel).first()
-                        print(2)
-                        print(l1.date)
-                        l2 = session.query(reception).filter(reception.id_office==l1.id_office,datetime.strptime(l1.date,'%Y-%m-%d %H:%M:%S')==dt).count()
-                        print(2)
-                        if l2 == 0:
-                            res =dt
-                            d_per = tabl[i].id_personnel
-                            n_c = tabl[i].id_office
-                            f=1
+                        tabl2 =session.query(personnel).filter(personnel.id_spec == spec_id)
+                        print(3)
+                        print(f'spec_id=', spec_id)
+                        line2 = session.query(personnel).filter(personnel.id_spec == spec_id).count()
+                        print(4)
+                        print(f'line2=',line2)
+                        for k in range(line2):
+                            print(1)
+                            l1 = session.query(reception).filter(reception.id_personnel==tabl2[k].id).first()
+                            print(2)
+                            print(l1.date)
+                            l2 = session.query(reception).filter(reception.id_office==l1.id_office,datetime.strptime(l1.date,'%Y-%m-%d %H:%M:%S')==dt).count()
+                            print(5)
+                            if l2 == 0:
+                                res =dt
+                                d_per = tabl2[k].id
+                                n_c = tabl2[k].id_office
+                                f=1
             dt = dt + timedelta(hours=1)
         tabl = session.query(reception).all()
         line = session.query(reception).count()
