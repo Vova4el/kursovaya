@@ -127,7 +127,6 @@ class admin_panel(QMainWindow):
             table10 = pd.DataFrame({})
             table11 = pd.DataFrame({})
             for i in range(11):
-                print(f'-----', i, f'------')
                 if i == 0:
                     count = session.query(personnel).count()
                     collum1 = [0] * count
@@ -685,6 +684,7 @@ class admin_panel(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
+            dump_sqlalchemy()
             self.ui.prov = 0
             self.write_table()
         else:
@@ -850,6 +850,7 @@ class personal_panel(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
+            dump_sqlalchemy()
             self.ui.prov = 0
             self.write_table()
         else:
@@ -1034,20 +1035,15 @@ class patient_panel(QMainWindow):
             line_wh = session.query(working_hours).filter(working_hours.id_spec == spec_id,working_hours.id_day==datetime.isoweekday(dt)).count()
             if line_wh!=0:
                 for j in range(line_wh):
-                    print(dt)
-                    print(1)
                     wh2=datetime.strptime(wh[j].work_hours[1],'%H:%M:%S')
                     wh1=datetime.strptime(wh[j].work_hours[0],'%H:%M:%S')
                     bt1 = datetime.strptime(wh[j].break_time[0], '%H:%M:%S')
                     bt2 = datetime.strptime(wh[j].break_time[1], '%H:%M:%S')
                     if (wh1.time()<=dt.time())&(wh2.time()>=dt.time())&((bt1.time()>dt.time())|(bt2.time()<dt.time())):
-                        print(2)
                         tabl2 =session.query(personnel).filter(personnel.id_spec == spec_id)
                         line2 = session.query(personnel).filter(personnel.id_spec == spec_id).count()
                         for k in range(line2):
-                            print(3)
                             line_l2 = session.query(reception).filter(reception.id_personnel == tabl2[k].id).count()
-                            print(4)
                             if line_l2 != 0:
                                 l1 = session.query(reception).filter(reception.id_personnel == tabl2[k].id).first()
                                 l2 = session.query(reception).filter(reception.id_office == l1.id_office,datetime.strptime(l1.date, '%Y-%m-%d %H:%M:%S')==dt).count()
@@ -1085,6 +1081,7 @@ class patient_panel(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
+            dump_sqlalchemy()
             self.ui.prov = 0
             self.write_table()
         else:
@@ -1172,6 +1169,7 @@ class log_panel(QMainWindow):
             user_setting = accounts(id=free_id, login=log, password=pasw, id_stat=1)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             self.hide()
             dialog = admin_panel(parent=self)
             dialog.show()
@@ -1179,6 +1177,7 @@ class log_panel(QMainWindow):
             user_setting = accounts(id=free_id, login=log, password=pasw, id_stat=2)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             f = 0  # флаг
             line = session.query(patient).count()
             tabl = session.query(patient).all()
@@ -1195,6 +1194,7 @@ class log_panel(QMainWindow):
             user_setting = patient(id=free_id2, name=self.ui.textEdit_3.toPlainText(), id_acc=free_id)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
 
             self.hide()
             dialog = patient_panel(parent=self)
@@ -1204,6 +1204,7 @@ class log_panel(QMainWindow):
             user_setting = accounts(id=free_id, login=log, password=pasw, id_stat=3)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             f = 0  # флаг
             line = session.query(personnel).count()
             tabl = session.query(personnel).all()
@@ -1220,6 +1221,7 @@ class log_panel(QMainWindow):
             user_setting = personnel(id=free_id2, id_spec=int(self.ui.comboBox_2.currentText()), id_office= int(self.ui.comboBox_3.currentText()),name=self.ui.textEdit_3.toPlainText(), id_acc=free_id)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             self.hide()
             dialog = personal_panel(parent=self)
             dialog.show()
