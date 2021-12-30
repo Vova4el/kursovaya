@@ -144,7 +144,7 @@ class patientUI:
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Окно пациента"))
         self.label_4.setText(_translate("MainWindow", "Поле ввода"))
         self.label_6.setText(_translate("MainWindow", "Сначала откройте расписание приёмов"))
         self.label_8.setText(_translate("MainWindow", "Выберите ID специализации"))
