@@ -9,7 +9,6 @@ from email.mime.text import MIMEText
 import os
 import json
 from classes import *
-from sqlalchemy.ext.serializer import loads, dumps
 
 
 def send_email(filepath):
