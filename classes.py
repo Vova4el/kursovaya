@@ -7,10 +7,17 @@ from sqlalchemy import insert, delete, update
 import psycopg2
 from psycopg2 import Error
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from sqlalchemy import create_engine, insert, delete, update
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import *
+from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 engine = create_engine("postgresql+psycopg2://postgres:13241340@localhost/medical_institution")
 conn = engine.connect()
+
+meta = MetaData()
 
 glob_id=0
 

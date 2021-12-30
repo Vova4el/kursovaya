@@ -4,6 +4,7 @@ import classes
 from personalQT import personalUI
 from patientQT import patientUI
 from datetime import timedelta,datetime, date, time
+from backup_bd import *
 import random
 import docx
 import pandas as pd
@@ -685,6 +686,7 @@ class admin_panel(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
+            dump_sqlalchemy()
             self.ui.prov = 0
             self.write_table()
         else:
@@ -850,6 +852,7 @@ class personal_panel(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
+            dump_sqlalchemy()
             self.ui.prov = 0
             self.write_table()
         else:
@@ -1081,6 +1084,7 @@ class patient_panel(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
+            dump_sqlalchemy()
             self.ui.prov = 0
             self.write_table()
         else:
@@ -1168,6 +1172,7 @@ class log_panel(QMainWindow):
             user_setting = accounts(id=free_id, login=log, password=pasw, id_stat=1)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             self.hide()
             dialog = admin_panel(parent=self)
             dialog.show()
@@ -1175,6 +1180,7 @@ class log_panel(QMainWindow):
             user_setting = accounts(id=free_id, login=log, password=pasw, id_stat=2)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             f = 0  # флаг
             line = session.query(patient).count()
             tabl = session.query(patient).all()
@@ -1191,6 +1197,7 @@ class log_panel(QMainWindow):
             user_setting = patient(id=free_id2, name=self.ui.textEdit_3.toPlainText(), id_acc=free_id)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             self.hide()
             dialog = patient_panel(parent=self)
             dialog.show()
@@ -1199,6 +1206,7 @@ class log_panel(QMainWindow):
             user_setting = accounts(id=free_id, login=log, password=pasw, id_stat=3)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             f = 0  # флаг
             line = session.query(personnel).count()
             tabl = session.query(personnel).all()
@@ -1215,6 +1223,7 @@ class log_panel(QMainWindow):
             user_setting = personnel(id=free_id2, id_spec=int(self.ui.comboBox_2.currentText()), id_office= int(self.ui.comboBox_3.currentText()),name=self.ui.textEdit_3.toPlainText(), id_acc=free_id)
             session.add(user_setting)
             session.commit()
+            dump_sqlalchemy()
             self.hide()
             dialog = personal_panel(parent=self)
             dialog.show()
