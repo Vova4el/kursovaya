@@ -4,11 +4,11 @@ from Authentication import login_panell
 import classes
 from personalQT import personalUI
 from patientQT import patientUI
+from personal_med_kniga_QT import Med_knigaUi
 from datetime import timedelta, datetime, time
 import docx
 import pandas as pd
-
-################ОКНО_АДМИНА##########################
+#ОКНО_АДМИНА
 class admin_panel(QMainWindow):
     def __init__(self, parent=None):
         super(admin_panel, self).__init__(parent)
@@ -29,7 +29,6 @@ class admin_panel(QMainWindow):
             for i in range(12):
                 table_1 = mydoc.add_table(rows=0, cols=0, style='Table Grid')
                 table = user_status
-                line = 0
                 collums = []
                 if i == 1:
                     mydoc.add_paragraph("Таблица статусов пользователей (user_status):")
@@ -287,7 +286,6 @@ class admin_panel(QMainWindow):
         self.ui.comboBox_3.clear()
         self.ui.tableWidget.clearSelection()
         result = self.ui.comboBox.currentText()
-        line = 0
         collums = []
         if result == "Аккаунты":
             table = accounts
@@ -356,19 +354,9 @@ class admin_panel(QMainWindow):
         for i in collums:
             if i != 'id':
                 self.ui.comboBox_2.addItem(i)
-        for i in range(line):
-            self.ui.comboBox_3.addItem(str(i + 1))
-        for row, form in enumerate(self.ui.qTable):
-            col = 0
-            for c in collums:
-                for k, v in vars(form).items():
-                    if c == k:
-                        self.ui.tableWidget.setItem(row, col, QTableWidgetItem(str(v)))
-                        col += 1
         for i in session.query(table).all():
             sort[j] = i.id
             j += 1
-        self.ui.comboBox_3.clear()
         sort.sort()
         for i in sort:
             self.ui.comboBox_3.addItem(str(i))
@@ -386,7 +374,10 @@ class admin_panel(QMainWindow):
                             if ((c == 'id') & (v == i)) | ((c != 'id') & (perem == i)):
                                 self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(v)))
                                 col += 1
+        self.ui.tableWidget.setStyleSheet("selection-color: rgb(255, 0, 127);\n"
+                                       "selection-background-color: rgb(85, 255, 127);")
         self.ui.tableWidget.resizeColumnsToContents()
+
 
     def change_table(self):
         self.ui.statusbar.clearMessage()
@@ -698,83 +689,80 @@ class admin_panel(QMainWindow):
         else:
             self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
 
-#########################ПАНЕЛЬ_ДЛЯ_ПЕРСОНАЛА##########################################
+#ОКНО_ДЛЯ_ПЕРСОНАЛА#
 class personal_panel(QMainWindow):
     def __init__(self, parent=None):
         super(personal_panel, self).__init__(parent)
         self.ui = personalUI()
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(lambda: self.write_table())
-        self.ui.pushButton_2.clicked.connect(lambda: self.change_table())
-        self.ui.pushButton_3.clicked.connect(lambda: self.confirm_change())
-        self.ui.pushButton_4.clicked.connect(lambda: self.undo_change())
+        self.ui.pushButton_2.clicked.connect(lambda: self.exit_med_kniga())
+        self.ui.action.triggered.connect(lambda: self.exit_db_panel())
+
+    # вывод по внешнему ключу
+    def output_by_foreign_key(self,k,v,col,j):
+        if k=='id_stat':
+            q=session.query(user_status).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.status)))
+        elif k=='id_day':
+            q=session.query(day).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k=='id_spec':
+            q=session.query(specialization).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name_spec)))
+        elif k=='id_patient':
+            q=session.query(patient).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_personnel':
+            q = session.query(personnel).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_reception_status':
+            q = session.query(reception_status).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_office':
+            q = session.query(offices).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.cab_num)))
+        else:
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(v)))
 
     def write_table(self):
-        self.ui.comboBox_2.clear()
-        self.ui.comboBox_3.clear()
         self.ui.tableWidget.clearSelection()
         result = self.ui.comboBox.currentText()
         line = 0
         collums = []
         if result == "Пациенты":
             table = patient
-            self.ui.tableWidget.setColumnCount(3)
-            collums = ['id', 'name', 'id_acc']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "ФИО", "ID аккаунта"])
-        if result == "День":
-            table = day
-            self.ui.tableWidget.setColumnCount(2)
-            collums = ['id', 'name']
-            self.ui.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "День"])
-        if result == "Специализация":
-            table = specialization
-            self.ui.tableWidget.setColumnCount(2)
-            collums = ['id', 'name_spec']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "Специализация"])
-        if result == "Статус приёма":
-            table = reception_status
-            self.ui.tableWidget.setColumnCount(2)
-            collums = ['id', 'name']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "Статус"])
-        if result == "Кабинеты":
-            table = offices
-            self.ui.tableWidget.setColumnCount(2)
-            collums = ['id', 'cab_num']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "Номер кабинета"])
+            self.ui.tableWidget.setColumnCount(1)
+            collums = ['name']
+            self.ui.tableWidget.setHorizontalHeaderLabels(["ФИО"])
         if result == "Персонал":
             table = personnel
-            self.ui.tableWidget.setColumnCount(5)
-            collums = ['id', 'id_spec', 'id_office', 'name', 'id_acc']
+            self.ui.tableWidget.setColumnCount(3)
+            collums = ['id', 'id_spec', 'id_office', 'name']
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "ID специализации", "ID кабинета", "ФИО", 'ID аккаунта'])
+                ["Специализация персонала", "№ кабинета", "ФИО"])
         if result == "Время работы":
             table = working_hours
-            self.ui.tableWidget.setColumnCount(6)
+            self.ui.tableWidget.setColumnCount(5)
             collums = ['id', 'id_day', 'id_spec', 'work_hours', 'free_time', 'break_time']
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "ID дня", "ID специализации", "рабочее время", "свободное время", "перерыв"])
+                [ "День", "Специализация", "Рабочее время", "Свободное время", "Перерыв"])
         if result == "Приём":
             table = reception
-            self.ui.tableWidget.setColumnCount(7)
+            self.ui.tableWidget.setColumnCount(6)
             collums = ['id', 'id_patient', 'id_office', 'id_reception_status', 'id_personnel', 'id_spec', 'date']
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "ID пациента", "ID кабинета", "ID статуса приёма", "ID персонала", "id специализации", "Дата"])
+                ["ФИО пациента", "№ кабинета", "Статуса приёма", "ФИО персонала", "Специализация персонала", "Дата"])
         if result == "Мед книжка":
             table = med_knigа
-            self.ui.tableWidget.setColumnCount(4)
+            self.ui.tableWidget.setColumnCount(3)
             collums = ['id', 'id_patient', 'id_personnel', 'diagnoz']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "ID персонала", "Диагноз"])
+            self.ui.tableWidget.setHorizontalHeaderLabels(["ID пациента", "ID персонала", "Диагноз"])
         line = session.query(table).count()
         self.ui.qTable = session.query(table).all()
         self.ui.tableWidget.setRowCount(line)
         sort = [0] * line
         j = 0
-        p = session.query(patient).all()
-        for i in range(session.query(patient).count()):
-                self.ui.comboBox_2.addItem(str(p[i].id))
-        for i in range(line):
-            self.ui.comboBox_3.addItem(str(i + 1))
         for row, form in enumerate(self.ui.qTable):
             col = 0
             for c in collums:
@@ -785,10 +773,7 @@ class personal_panel(QMainWindow):
         for i in session.query(table).all():
             sort[j] = i.id
             j += 1
-        self.ui.comboBox_3.clear()
         sort.sort()
-        for i in sort:
-            self.ui.comboBox_3.addItem(str(i))
         perem = 0
         j = -1
         for i in sort:
@@ -800,8 +785,8 @@ class personal_panel(QMainWindow):
                         if c == k:
                             if c == 'id':
                                 perem = v
-                            if ((c == 'id') & (v == i)) | ((c != 'id') & (perem == i)):
-                                self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(v)))
+                            if (c != 'id') & (perem == i):
+                                self.output_by_foreign_key(k,v,col,j)
                                 col += 1
         self.ui.tableWidget.resizeColumnsToContents()
 
@@ -847,6 +832,22 @@ class personal_panel(QMainWindow):
         except:
             self.ui.statusbar.showMessage("Произошла ошибка")
 
+    # Выход из окна персонала обратно в окно авторизации
+    def exit_db_panel(self):
+        print(23)
+        self.hide()
+        dialog = log_panel(parent=self)
+        dialog.show()
+
+    # Выход из окна персонала обратно в окно авторизации
+    def exit_med_kniga(self):
+        print(23)
+        self.hide()
+        print(24)
+        dialog = panel_med_kniga(parent=self)
+        print(25)
+        dialog.show()
+
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
@@ -863,6 +864,176 @@ class personal_panel(QMainWindow):
             self.write_table()
         else:
             self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
+
+
+
+
+#########################Окно_ДЛЯ_работы с мед книжкой##########################################
+class panel_med_kniga(QMainWindow):
+    def __init__(self, parent=None):
+        super(panel_med_kniga, self).__init__(parent)
+        self.ui = Med_knigaUi()
+        self.ui.setupUi(self)
+        self.ui.pushButton.clicked.connect(lambda: self.write_table())
+        self.ui.pushButton_2.clicked.connect(lambda: self.change_table())
+        self.ui.action.triggered.connect(lambda: self.exit_aut())
+        self.ui.action_2.triggered.connect(lambda: self.exit_personnel())
+
+    # вывод по внешнему ключу
+    def output_by_foreign_key(self,k,v,col,j):
+        print('j')
+        print(f'kk=',k)
+        if k=='id_stat':
+            q=session.query(user_status).filter_by(id=int(v)).first()
+            print(f'q',q)
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.status)))
+        elif k=='id_day':
+            q=session.query(day).filter_by(id=int(v)).first()
+            print(f'q',q)
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k=='id_spec':
+            q=session.query(specialization).filter_by(id=int(v)).first()
+            print(f'q',q)
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name_spec)))
+        elif k=='id_patient':
+            q=session.query(patient).filter_by(id=int(v)).first()
+            print(f'q',q)
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_personnel':
+            q = session.query(personnel).filter_by(id=int(v)).first()
+            print(f'q', q)
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_reception_status':
+            q = session.query(reception_status).filter_by(id=int(v)).first()
+            print(f'q', q)
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_office':
+            q = session.query(offices).filter_by(id=int(v)).first()
+            print(f'q', q)
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.cab_num)))
+        else:
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(v)))
+
+    def write_table(self):
+        self.ui.comboBox_2.clear()
+        self.ui.comboBox_3.clear()
+        self.ui.tableWidget.clearSelection()
+        result = self.ui.comboBox.currentText()
+        line = 0
+        collums = []
+        table = med_knigа
+        self.ui.tableWidget.setColumnCount(3)
+        collums = ['id', 'id_patient', 'id_personnel', 'diagnoz']
+        self.ui.tableWidget.setHorizontalHeaderLabels(["ID пациента", "ID персонала", "Диагноз"])
+        line = session.query(table).count()
+        self.ui.qTable = session.query(table).all()
+        self.ui.tableWidget.setRowCount(line)
+        sort = [0] * line
+        j = 0
+        p = session.query(patient).all()
+        for i in range(session.query(patient).count()):
+                self.ui.comboBox_2.addItem(str(p[i].name))
+        for i in range(line):
+            self.ui.comboBox_3.addItem(str(i + 1))
+        for row, form in enumerate(self.ui.qTable):
+            col = 0
+            for c in collums:
+                for k, v in vars(form).items():
+                    if c == k:
+                        self.ui.tableWidget.setItem(row, col, QTableWidgetItem(str(v)))
+                        col += 1
+        for i in session.query(table).all():
+            sort[j] = i.id
+            j += 1
+        perem = 0
+        j = -1
+        for i in sort:
+            j += 1
+            for row, form in enumerate(self.ui.qTable):
+                col = 0
+                for c in collums:
+                    for k, v in vars(form).items():
+                        if c == k:
+                            if c == 'id':
+                                perem = v
+                            if (c != 'id') & (perem == i):
+                                self.output_by_foreign_key(k,v,col,j)
+                                col += 1
+        self.ui.tableWidget.resizeColumnsToContents()
+
+    def change_table(self):
+        self.ui.statusbar.clearMessage()
+        if self.ui.prov == 0:
+            self.ui.prov = 1
+        change = self.ui.comboBox_4.currentText()
+        stlb = int(self.ui.comboBox_3.currentText())
+        p_id = self.ui.comboBox_2.currentText()
+        text = self.ui.textEdit.toPlainText()
+        try:
+            if change == "Добавить строку":
+                line = session.query(med_knigа).count()
+                tabl = session.query(med_knigа).all()
+                f = 0  # флаг
+                free_id = 1  # свободный индекс
+                while f == 0:
+                    for i in range(line):
+                        if free_id == tabl[i].id:
+                            f = 1
+                    if f == 1:
+                        free_id = free_id + 1
+                        f = 0
+                    else:
+                        f = 1
+                new = med_knigа(id=free_id, id_patient=p_id,id_personnel=classes.glob_id,diagnoz=text)
+                session.add(new)
+            if change == "Обновить элемент":
+                query = session.query(med_knigа).get(stlb)
+                if classes.glob_id == query.id_personnel:
+                    query.diagnoz = text
+                else:
+                    self.ui.statusbar.showMessage("Вы должны быть той же специальности, что и врач, написавший этот диагноз")
+            if change == "Удалить строку":
+                query = session.query(med_knigа).get(stlb)
+                if classes.glob_id == query.id_personnel:
+                    session.query(med_knigа).filter_by(id=stlb).delete(synchronize_session=False)
+                else:
+                    self.ui.statusbar.showMessage("Вы должны быть той же специальности, что и врач, написавший этот диагноз")
+            self.write_table()
+
+        except:
+            self.ui.statusbar.showMessage("Произошла ошибка")
+
+    # Выход из окна персонала обратно в окно авторизации
+    def exit_aut(self):
+        print(23)
+        self.hide()
+        dialog = log_panel(parent=self)
+        dialog.show()
+
+    # Выход из окна персонала обратно в окно авторизации
+    def exit_personnel(self):
+        print(23)
+        self.hide()
+        dialog = personal_panel(parent=self)
+        dialog.show()
+
+    def confirm_change(self):
+        if self.ui.prov != 0:
+            session.commit()
+            dump_sqlalchemy()
+            self.ui.prov = 0
+            self.write_table()
+        else:
+            self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
+
+    def undo_change(self):
+        if self.ui.prov != 0:
+            session.rollback()
+            self.ui.prov = 0
+            self.write_table()
+        else:
+            self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
+
 
 
 
