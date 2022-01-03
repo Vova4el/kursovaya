@@ -4,6 +4,8 @@ import pandas as pd
 from med_kniga_window import panel_med_kniga
 from backup_bd import *
 import log_window
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QTableWidgetItem
 
 #ОКНО_АДМИНА
 class admin_panel(QMainWindow):
