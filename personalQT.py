@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import sys
 
 class personalUI:
@@ -10,24 +10,17 @@ class personalUI:
         self.app = QtWidgets.QApplication(sys.argv)
         self.MainWindow = None
         self.centralwidget = None
-        self.gridLayout = None
-        self.label_5 = None
-        self.pushButton_2 = None
-        self.pushButton_3 = None
-        self.comboBox_4 = None
-        self.label = None
-        self.comboBox = None
         self.tableWidget = None
+        self.layoutWidget = None
+        self.gridLayout = None
         self.pushButton = None
-        self.textBrowser = None
-        self.label_4 = None
-        self.label_3 = None
-        self.label_2 = None
-        self.comboBox_2 = None
-        self.comboBox_3 = None
-        self.pushButton_4 = None
-        self.menubar = None
+        self.label_7 = None
+        self.comboBox = None
+        self.pushButton_2 = None
         self.statusbar = None
+        self.menubar = None
+        self.menu = None
+        self.action = None
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(741, 633)

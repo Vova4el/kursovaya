@@ -1,6 +1,5 @@
-from Qt import *
-from window_class import *
-from Authentication import *
+from PyQt5.QtWidgets import QApplication
+from log_window import *
 import sys
 app = QApplication(sys.argv)
 window = log_panel()

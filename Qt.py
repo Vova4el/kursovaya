@@ -1,8 +1,4 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog
-from PyQt5.QtWidgets import QTableWidgetItem
-from classes import *
-from PyQt5 import QtCore, QtWidgets
 import sys
 
 class Ui_MainWindow:
