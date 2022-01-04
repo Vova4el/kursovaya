@@ -12,8 +12,9 @@ class panel_med_kniga(QMainWindow):
         super(panel_med_kniga, self).__init__(parent)
         self.ui = Med_knigaUi()
         self.ui.setupUi(self)
-        self.ui.pushButton.clicked.connect(lambda: self.write_table())
         self.ui.pushButton_2.clicked.connect(lambda: self.change_table())
+        self.ui.pushButton_3.clicked.connect(lambda: self.confirm_change())
+        self.ui.pushButton_4.clicked.connect(lambda: self.undo_change())
         self.ui.action.triggered.connect(lambda: self.exit_aut())
         self.ui.action_2.triggered.connect(lambda: self.exit_personnel())
         self.write_table()
@@ -48,13 +49,10 @@ class panel_med_kniga(QMainWindow):
         self.ui.comboBox_2.clear()
         self.ui.comboBox_3.clear()
         self.ui.tableWidget.clearSelection()
-        result = self.ui.comboBox.currentText()
-        line = 0
-        collums = []
         table = med_knigа
-        self.ui.tableWidget.setColumnCount(3)
-        collums = ['id', 'id_patient', 'id_personnel', 'diagnoz']
-        self.ui.tableWidget.setHorizontalHeaderLabels(["ID пациента", "ID персонала", "Диагноз"])
+        self.ui.tableWidget.setColumnCount(4)
+        collums = ['id', 'id_patient', 'id_personnel', 'id_spec', 'diagnoz']
+        self.ui.tableWidget.setHorizontalHeaderLabels(["ФИО пациента", "ФИО персонала", 'Специализация', "Диагноз"])
         line = session.query(table).count()
         self.ui.qTable = session.query(table).all()
         self.ui.tableWidget.setRowCount(line)
@@ -86,22 +84,14 @@ class panel_med_kniga(QMainWindow):
         self.ui.tableWidget.resizeColumnsToContents()
 
     def change_table(self):
-        print(6)
         self.ui.statusbar.clearMessage()
-        print(7)
         if self.ui.prov == 0:
             self.ui.prov = 1
-        print(1)
         change = self.ui.comboBox_4.currentText()
-        print(2)
         stlb = int(self.ui.comboBox_3.currentText())
-        print(3)
         p = session.query(patient).all()
-        print(4)
         p_id=p[self.ui.comboBox_2.currentIndex()].id #индекс пациента
-        print(5)
         text = self.ui.textEdit.toPlainText()
-        print(f'p_id', p_id)
         try:
             if change == "Добавить строку":
                 line = session.query(med_knigа).count()
@@ -117,17 +107,20 @@ class panel_med_kniga(QMainWindow):
                         f = 0
                     else:
                         f = 1
-                new = med_knigа(id=free_id, id_patient=p_id, id_personnel=classes.glob_id, diagnoz=text)
+                new = med_knigа(id=free_id, id_patient=p_id, id_personnel=classes.glob_id,
+                                id_spec=(session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec, diagnoz=text)
                 session.add(new)
             if change == "Обновить элемент":
                 query = session.query(med_knigа).get(stlb)
-                if classes.glob_id == query.id_personnel:
+                if (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec == query.id_spec:
+                    query.id_personnel = classes.glob_id
                     query.diagnoz = text
+                    query.id_spec = (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec
                 else:
                     self.ui.statusbar.showMessage("Вы должны быть той же специальности, что и врач, написавший этот диагноз")
             if change == "Удалить строку":
                 query = session.query(med_knigа).get(stlb)
-                if classes.glob_id == query.id_personnel:
+                if (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec == query.id_spec:
                     session.query(med_knigа).filter_by(id=stlb).delete(synchronize_session=False)
                 else:
                     self.ui.statusbar.showMessage("Вы должны быть той же специальности, что и врач, написавший этот диагноз")

@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QTableWidgetItem
 from classes import *
 from personalQT import personalUI
 from med_kniga_window import panel_med_kniga
+from disc_window import disc_panel
 import log_window
 #ОКНО_ДЛЯ_ПЕРСОНАЛА#
 class personal_panel(QMainWindow):
@@ -12,6 +13,7 @@ class personal_panel(QMainWindow):
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(lambda: self.write_table())
         self.ui.pushButton_2.clicked.connect(lambda: self.exit_med_kniga())
+        self.ui.pushButton_3.clicked.connect(lambda: self.exit_disc())
         self.ui.action.triggered.connect(lambda: self.exit_db_panel())
         self.write_table()
 
@@ -73,9 +75,9 @@ class personal_panel(QMainWindow):
                 ["ФИО пациента", "№ кабинета", "Статуса приёма", "ФИО персонала", "Специализация персонала", "Дата"])
         if result == "Мед книжка":
             table = med_knigа
-            self.ui.tableWidget.setColumnCount(3)
-            collums = ['id', 'id_patient', 'id_personnel', 'diagnoz']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ФИО пациента", "ФИО персонала", "Диагноз"])
+            self.ui.tableWidget.setColumnCount(4)
+            collums = ['id', 'id_patient', 'id_personnel', 'id_spec', 'diagnoz']
+            self.ui.tableWidget.setHorizontalHeaderLabels(["ФИО пациента", "ФИО персонала", 'Специализация', "Диагноз"])
         line = session.query(table).count()
         self.ui.qTable = session.query(table).all()
         self.ui.tableWidget.setRowCount(line)
@@ -122,4 +124,10 @@ class personal_panel(QMainWindow):
         print(24)
         dialog = panel_med_kniga(parent=self)
         print(25)
+        dialog.show()
+
+    # Выход из окна персонала
+    def exit_disc(self):
+        self.hide()
+        dialog = disc_panel(parent=self)
         dialog.show()

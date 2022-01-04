@@ -131,6 +131,7 @@ class med_knigа(Base):
     id = Column(Integer, primary_key=True)
     id_patient = Column(Integer, ForeignKey('patient.id'))
     id_personnel = Column(Integer, ForeignKey('personnel.id'))
+    id_spec = Column(Integer, ForeignKey('specialization.id'))
     diagnoz = Column(String(100))
 
     def __repr__(self):

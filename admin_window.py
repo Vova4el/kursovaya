@@ -18,8 +18,6 @@ class admin_panel(QMainWindow):
         self.ui.pushButton_3.clicked.connect(lambda: self.confirm_change())
         self.ui.pushButton_4.clicked.connect(lambda: self.undo_change())
         self.ui.pushButton_5.clicked.connect(lambda: self.vugr_db())
-        self.ui.comboBox_5.addItem("В Docx")
-        self.ui.comboBox_5.addItem("В Xlsx")
 
     # Выгрузка БД в Docx или Xlsx
     def vugr_db(self):
@@ -342,9 +340,9 @@ class admin_panel(QMainWindow):
                 ["ID", "ID пациента", "ID кабинета", "ID статуса приёма", "ID персонала", "ID специализации", "Дата"])
         if result == "Мед книжка":
             table = med_knigа
-            self.ui.tableWidget.setColumnCount(4)
-            collums = ['id', 'id_patient', 'id_personnel', 'diagnoz']
-            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "ID персонала", "Диагноз"])
+            self.ui.tableWidget.setColumnCount(5)
+            collums = ['id', 'id_patient', 'id_personnel', 'id_spec', 'diagnoz']
+            self.ui.tableWidget.setHorizontalHeaderLabels(["ID", "ID пациента", "ID персонала", 'ID специализации', "Диагноз"])
         line = session.query(table).count()
         self.ui.qTable = session.query(table).all()
         self.ui.tableWidget.setRowCount(line)

@@ -172,3 +172,5 @@ class Ui_MainWindow:
         self.comboBox_4.addItem("Добавить строку")
         self.comboBox_4.addItem("Удалить строку")
         self.comboBox_4.addItem("Обновить элемент")
+        self.comboBox_5.addItem("В Docx")
+        self.comboBox_5.addItem("В Xlsx")
