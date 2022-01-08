@@ -16,6 +16,33 @@ class patient_panel(QMainWindow):
         self.ui.pushButton_3.clicked.connect(lambda: self.confirm_change())
         self.ui.pushButton_4.clicked.connect(lambda: self.undo_change())
         self.ui.pushButton_5.clicked.connect(lambda: self.autoplay_spec())
+        self.write_table()
+
+    # вывод по внешнему ключу
+    def output_by_foreign_key(self,k,v,col,j):
+        if k=='id_stat':
+            q=session.query(user_status).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.status)))
+        elif k=='id_day':
+            q=session.query(day).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k=='id_spec':
+            q=session.query(specialization).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name_spec)))
+        elif k=='id_patient':
+            q=session.query(patient).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_personnel':
+            q = session.query(personnel).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_reception_status':
+            q = session.query(reception_status).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.name)))
+        elif k == 'id_office':
+            q = session.query(offices).filter_by(id=int(v)).first()
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(q.cab_num)))
+        else:
+            self.ui.tableWidget.setItem(j, col, QTableWidgetItem(str(v)))
 
     def write_table(self):
         self.ui.comboBox_3.clear()

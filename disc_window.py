@@ -102,7 +102,6 @@ class disc_panel(QMainWindow):
                         p_id = p[self.ui.comboBox_3.currentIndex()].id
                         table_1 = mydoc.add_table(rows=session.query(med_knigа).filter_by(id_patient=p_id).count() + 1, cols=4, style='Table Grid')
                     else:
-                        print(3)
                         table_1 = mydoc.add_table(rows=session.query(med_knigа).count() + 1, cols=4, style='Table Grid')
                     table = med_knigа
                     collums = ['id', 'id_patient', 'id_personnel', 'id_spec', 'diagnoz']
@@ -124,7 +123,6 @@ class disc_panel(QMainWindow):
                         p_id = p[self.ui.comboBox_3.currentIndex()].id
                         table_1 = mydoc.add_table(rows=session.query(reception).filter_by(id_patient=p_id).count() + 1, cols=6, style='Table Grid')
                     else:
-                        print(1)
                         table_1 = mydoc.add_table(rows=session.query(reception).count() + 1, cols=6, style='Table Grid')
                     table = reception
                     collums = ['id', 'id_patient', 'id_office', 'id_reception_status', 'id_personnel', 'id_spec', 'date']
@@ -153,7 +151,6 @@ class disc_panel(QMainWindow):
                         if f2 == 1:
                             z += 1
                     else:
-                        print(2)
                         z += 1
                     f2 = 0
                     for row, form in enumerate(self.ui.qTable):
@@ -187,166 +184,119 @@ class disc_panel(QMainWindow):
         else:
             table1 = pd.DataFrame({})
             table2 = pd.DataFrame({})
-            table3 = pd.DataFrame({})
-            table4 = pd.DataFrame({})
-            table5 = pd.DataFrame({})
-            table6 = pd.DataFrame({})
-            table7 = pd.DataFrame({})
-            table8 = pd.DataFrame({})
-            table9 = pd.DataFrame({})
-            table10 = pd.DataFrame({})
-            table11 = pd.DataFrame({})
-            for i in range(11):
-                if i == 0:
-                    count = session.query(personnel).count()
-                    collum1 = [0] * count
-                    collum2 = [0] * count
-                    collum3 = [0] * count
-                    collum4 = [""] * count
-                    collum5 = [0] * count
-                    z = 0
-                    for j in session.query(personnel).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.id_spec
-                        collum3[z] = j.id_office
-                        collum4[z] = j.name
-                        collum5[z] = j.id_acc
-                        z += 1
-                    table1 = pd.DataFrame({'id': collum1, 'id_spec': collum2, 'id_office': collum3, 'name': collum4, 'id_acc': collum5})
-                if i == 1:
-                    count = session.query(patient).count()
-                    collum1 = [0] * count
+            for i in range(2):
+                if i == 0 and (self.ui.comboBox_4.currentText() == "Все таблицы"
+                               or self.ui.comboBox_4.currentText() == "Все таблицы, но строки со мной"
+                             or self.ui.comboBox_4.currentText() == "Все таблицы, но строки с пациентом" or
+                             ((self.ui.comboBox_4.currentText() == "Всю таблицу"
+                               or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки со мной"
+                               or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом")
+                              and self.ui.comboBox.currentText() == "Приём")):
+                    if self.ui.comboBox_4.currentText() == "Всю таблицу, но строки со мной"\
+                            or self.ui.comboBox_4.currentText() == "Все таблицы, но строки со мной":
+                        count = session.query(reception).filter_by(id_personnel=classes.glob_id).count()
+                    elif self.ui.comboBox_4.currentText() == "Все таблицы, но строки с пациентом" \
+                         or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом":
+                        p = session.query(patient).all()
+                        p_id = p[self.ui.comboBox_3.currentIndex()].id
+                        count = session.query(reception).filter_by(id_patient=p_id).count()
+                    else:
+                        count = session.query(reception).count()
+                    collum1 = [""] * count
                     collum2 = [""] * count
-                    collum3 = [0] * count
-                    z = 0
-                    for j in session.query(patient).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.name
-                        collum3[z] = j.id_acc
-                        z += 1
-                    table2 = pd.DataFrame({'id': collum1, 'name': collum2, 'id_acc': collum3})
-                if i == 2:
-                    count = session.query(user_status).count()
-                    collum1 = [0] * count
-                    collum2 = [""] * count
-                    z = 0
-                    for j in session.query(user_status).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.status
-                        z += 1
-                    table3 = pd.DataFrame({'id': collum1, 'status': collum2})
-                if i == 3:
-                    count = session.query(offices).count()
-                    collum1 = [0] * count
-                    collum2 = [0] * count
-                    z = 0
-                    for j in session.query(offices).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.cab_num
-                        z += 1
-                    table4 = pd.DataFrame({'id': collum1, 'cab_num': collum2})
-                if i == 4:
-                    count = session.query(working_hours).count()
-                    collum1 = [0] * count
-                    collum2 = [0] * count
-                    collum3 = [0] * count
+                    collum3 = [""] * count
                     collum4 = [""] * count
                     collum5 = [""] * count
                     collum6 = [""] * count
                     z = 0
-                    for j in session.query(working_hours).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.id_day
-                        collum3[z] = j.id_spec
-                        collum4[z] = j.work_hours
-                        collum5[z] = j.free_time
-                        collum6[z] = j.break_time
-                        z += 1
-                    table5 = pd.DataFrame({'id': collum1, 'id_day': collum2, 'id_spec': collum3, 'work_hours': collum4,
-                                           'free_time': collum5, 'break_time': collum6})
-                if i == 5:
-                    count = session.query(reception).count()
-                    collum1 = [0] * count
-                    collum2 = [0] * count
-                    collum3 = [0] * count
-                    collum4 = [0] * count
-                    collum5 = [0] * count
-                    collum6 = [0] * count
-                    collum7 = [""] * count
-                    z = 0
-                    for j in session.query(reception).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.id_patient
-                        collum3[z] = j.id_office
-                        collum4[z] = j.id_reception_status
-                        collum5[z] = j.id_personnel
-                        collum6[z] = j.id_spec
-                        collum7[z] = j.date
-                        z += 1
-                    table6 = pd.DataFrame({'id': collum1, 'id_patient': collum2, 'id_office': collum3, 'id_reception_status': collum4, 'id_personnel': collum5, 'id_spec': collum6, 'date': collum7})
-                if i == 6:
-                    count = session.query(accounts).count()
-                    collum1 = [0] * count
+                    if self.ui.comboBox_4.currentText() == "Всю таблицу, но строки со мной" \
+                            or self.ui.comboBox_4.currentText() == "Все таблицы, но строки со мной":
+                        for j in session.query(reception).filter_by(id_personnel=classes.glob_id):
+                            collum1[z] = (session.query(patient).filter_by(id=j.id_patient).first()).name
+                            collum2[z] = (session.query(offices).filter_by(id=j.id_office).first()).cab_num
+                            collum3[z] = (session.query(reception_status).filter_by(id=j.id_reception_status).first()).name
+                            collum4[z] = (session.query(personnel).filter_by(id=j.id_personnel).first()).name
+                            collum5[z] = (session.query(specialization).filter_by(id=j.id_spec).first()).name_spec
+                            collum6[z] = j.date
+                            z += 1
+                    elif self.ui.comboBox_4.currentText() == "Все таблицы, но строки с пациентом" \
+                         or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом":
+                        p = session.query(patient).all()
+                        p_id = p[self.ui.comboBox_3.currentIndex()].id
+                        for j in session.query(reception).filter_by(id_patient=p_id):
+                            collum1[z] = (session.query(patient).filter_by(id=j.id_patient).first()).name
+                            collum2[z] = (session.query(offices).filter_by(id=j.id_office).first()).cab_num
+                            collum3[z] = (session.query(reception_status).filter_by(id=j.id_reception_status).first()).name
+                            collum4[z] = (session.query(personnel).filter_by(id=j.id_personnel).first()).name
+                            collum5[z] = (session.query(specialization).filter_by(id=j.id_spec).first()).name_spec
+                            collum6[z] = j.date
+                            z += 1
+                    else:
+                        for j in session.query(reception).all():
+                            collum1[z] = (session.query(patient).filter_by(id=j.id_patient).first()).name
+                            collum2[z] = (session.query(offices).filter_by(id=j.id_office).first()).cab_num
+                            collum3[z] = (session.query(reception_status).filter_by(id=j.id_reception_status).first()).name
+                            collum4[z] = (session.query(personnel).filter_by(id=j.id_personnel).first()).name
+                            collum5[z] = (session.query(specialization).filter_by(id=j.id_spec).first()).name_spec
+                            collum6[z] = j.date
+                            z += 1
+                    table1 = pd.DataFrame({'ФИО пациента': collum1, '№ кабинета': collum2, 'Статус приёма': collum3, 'ФИО персонала': collum4, 'Специализация персонала': collum5, 'Дата': collum6})
+                if i == 1 and (self.ui.comboBox_4.currentText() == "Все таблицы"
+                               or self.ui.comboBox_4.currentText() == "Все таблицы, но строки со мной"
+                             or self.ui.comboBox_4.currentText() == "Все таблицы, но строки с пациентом" or
+                             ((self.ui.comboBox_4.currentText() == "Всю таблицу"
+                               or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки со мной"
+                               or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом")
+                              and self.ui.comboBox.currentText() == "Мед книжка")):
+                    if self.ui.comboBox_4.currentText() == "Всю таблицу, но строки со мной"\
+                            or self.ui.comboBox_4.currentText() == "Все таблицы, но строки со мной":
+                        count = session.query(med_knigа).filter_by(id_personnel=classes.glob_id).count()
+                    elif self.ui.comboBox_4.currentText() == "Все таблицы, но строки с пациентом" \
+                         or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом":
+                        p = session.query(patient).all()
+                        p_id = p[self.ui.comboBox_3.currentIndex()].id
+                        count = session.query(med_knigа).filter_by(id_patient=p_id).count()
+                    else:
+                        count = session.query(med_knigа).count()
+                    collum1 = [""] * count
                     collum2 = [""] * count
                     collum3 = [""] * count
-                    collum4 = [0] * count
-                    z = 0
-                    for j in session.query(accounts).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.login
-                        collum3[z] = j.password
-                        collum4[z] = j.id_stat
-                        z += 1
-                    table7 = pd.DataFrame({'id': collum1, 'login': collum2, 'password': collum3, 'id_stat': collum4})
-                if i == 7:
-                    count = session.query(med_knigа).count()
-                    collum1 = [0] * count
-                    collum2 = [""] * count
-                    collum3 = [0] * count
                     collum4 = [""] * count
                     z = 0
-                    for j in session.query(med_knigа).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.id_patient
-                        collum3[z] = j.id_personnel
-                        collum4[z] = j.diagnoz
-                        z += 1
-                    table8 = pd.DataFrame({'id': collum1, 'id_patient': collum2, 'id_personnel': collum3,
-                                           'diagnoz': collum4})
-                if i == 8:
-                    count = session.query(day).count()
-                    collum1 = [0] * count
-                    collum2 = [""] * count
-                    z = 0
-                    for j in session.query(day).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.name
-                        z += 1
-                    table9 = pd.DataFrame({'id': collum1, 'name': collum2})
-                if i == 9:
-                    count = session.query(specialization).count()
-                    collum1 = [0] * count
-                    collum2 = [""] * count
-                    z = 0
-                    for j in session.query(specialization).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.name_spec
-                        z += 1
-                    table10 = pd.DataFrame({'id': collum1, 'name_spec': collum2})
-                if i == 10:
-                    count = session.query(reception_status).count()
-                    collum1 = [0] * count
-                    collum2 = [""] * count
-                    z = 0
-                    for j in session.query(reception_status).all():
-                        collum1[z] = j.id
-                        collum2[z] = j.name
-                        z += 1
-                    table11 = pd.DataFrame({'id': collum1, 'name': collum2})
-            salary_sheets = {'Персонал': table1, 'Пациенты': table2, 'Статусы пользователей': table3,
-                             'Кабинеты': table4, 'Рабочее время': table5, 'Запись на приём': table6,
-                             'Аккаунты': table7, 'Мед книжка': table8, 'Дни': table9, 'Специальность': table10,
-                             'Статусы записей на приём': table11}
+                    if self.ui.comboBox_4.currentText() == "Всю таблицу, но строки со мной" \
+                            or self.ui.comboBox_4.currentText() == "Все таблицы, но строки со мной":
+                        for j in session.query(med_knigа).filter_by(id_personnel=classes.glob_id):
+                            collum1[z] = (session.query(patient).filter_by(id=j.id_patient).first()).name
+                            collum2[z] = (session.query(personnel).filter_by(id=j.id_personnel).first()).name
+                            collum3[z] = (session.query(specialization).filter_by(id=j.id_spec).first()).name_spec
+                            collum4[z] = j.diagnoz
+                    elif self.ui.comboBox_4.currentText() == "Все таблицы, но строки с пациентом" \
+                         or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом":
+                        p = session.query(patient).all()
+                        p_id = p[self.ui.comboBox_3.currentIndex()].id
+                        for j in session.query(med_knigа).filter_by(id_patient=p_id):
+                            collum1[z] = (session.query(patient).filter_by(id=j.id_patient).first()).name
+                            collum2[z] = (session.query(personnel).filter_by(id=j.id_personnel).first()).name
+                            collum3[z] = (session.query(specialization).filter_by(id=j.id_spec).first()).name_spec
+                            collum4[z] = j.diagnoz
+                    else:
+                        for j in session.query(med_knigа).all():
+                            collum1[z] = (session.query(patient).filter_by(id=j.id_patient).first()).name
+                            collum2[z] = (session.query(personnel).filter_by(id=j.id_personnel).first()).name
+                            collum3[z] = (session.query(specialization).filter_by(id=j.id_spec).first()).name_spec
+                            collum4[z] = j.diagnoz
+                            z += 1
+                    table2 = pd.DataFrame({'ФИО пациента': collum1, 'ФИО персонала': collum2, 'Специализация': collum3, 'Диагноз': collum4})
+            if self.ui.comboBox_4.currentText() == "Все таблицы" \
+                    or self.ui.comboBox_4.currentText() == "Все таблицы, но строки со мной" \
+                    or self.ui.comboBox_4.currentText() == "Все таблицы, но строки с пациентом":
+                salary_sheets = {'Запись на приём': table1, 'Мед книжка': table2}
+            if (self.ui.comboBox_4.currentText() == "Всю таблицу" or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки со мной"
+                 or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом") and self.ui.comboBox.currentText() == "Мед книжка":
+                salary_sheets = {'Мед книжка': table2}
+            if (self.ui.comboBox_4.currentText() == "Всю таблицу" or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки со мной"
+                    or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом") and self.ui.comboBox.currentText() == "Приём":
+                salary_sheets = {'Запись на приём': table1}
             writer = pd.ExcelWriter('./database123456.xlsx', engine='xlsxwriter')
             for sheet_name in salary_sheets.keys():
                 salary_sheets[sheet_name].to_excel(writer, sheet_name=sheet_name, index=False)
@@ -421,14 +371,12 @@ class disc_panel(QMainWindow):
 
     # Выход из окна персонала обратно в окно авторизации
     def exit_aut(self):
-        print(23)
         self.hide()
         dialog = log_window.log_panel(parent=self)
         dialog.show()
 
     # Выход из окна выгрузки обратно в окно персонала
     def exit_personnel(self):
-        print(1)
         self.hide()
         dialog = personnel_window.personal_panel(parent=self)
         dialog.show()
