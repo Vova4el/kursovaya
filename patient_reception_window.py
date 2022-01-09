@@ -179,9 +179,7 @@ class panel_receprion(QMainWindow):
         if self.ui.comboBox_4.currentText() == "Отменить запись на приём":
             query = session.query(reception).all()
             if classes.glob_id == query[int(self.ui.comboBox_3.currentText())-1].id_patient:
-                print(3)
                 session.query(reception).filter_by(id=query[int(self.ui.comboBox_3.currentText())-1].id).delete(synchronize_session=False)
-                print(4)
             else:
                 self.ui.statusbar.showMessage("Вы не можете отменить чужую запись на приём")
         self.write_table()

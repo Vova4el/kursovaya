@@ -89,7 +89,7 @@ class panel_med_kniga(QMainWindow):
         if self.ui.prov == 0:
             self.ui.prov = 1
         change = self.ui.comboBox_4.currentText()
-        stlb = int(self.ui.comboBox_3.currentText())
+        stlb = int(self.ui.comboBox_3.currentText()) - 1
         p = session.query(patient).all()
         p_id=p[self.ui.comboBox_2.currentIndex()].id #индекс пациента
         text = self.ui.textEdit.toPlainText()
@@ -112,17 +112,17 @@ class panel_med_kniga(QMainWindow):
                                 id_spec=(session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec, diagnoz=text)
                 session.add(new)
             if change == "Обновить элемент":
-                query = session.query(med_knigа).get(stlb)
-                if (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec == query.id_spec:
-                    query.id_personnel = classes.glob_id
-                    query.diagnoz = text
-                    query.id_spec = (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec
+                query = session.query(med_knigа).all
+                if (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec == query[stlb].id_spec:
+                    query[stlb].id_personnel = classes.glob_id
+                    query[stlb].diagnoz = text
+                    query[stlb].id_spec = (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec
                 else:
                     self.ui.statusbar.showMessage("Вы должны быть той же специальности, что и врач, написавший этот диагноз")
             if change == "Удалить строку":
-                query = session.query(med_knigа).get(stlb)
-                if (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec == query.id_spec:
-                    session.query(med_knigа).filter_by(id=stlb).delete(synchronize_session=False)
+                query = session.query(med_knigа).all()
+                if (session.query(personnel).filter_by(id=classes.glob_id).first()).id_spec == query[stlb].id_spec:
+                    session.query(med_knigа).filter_by(id=query[stlb].id).delete(synchronize_session=False)
                 else:
                     self.ui.statusbar.showMessage("Вы должны быть той же специальности, что и врач, написавший этот диагноз")
             self.write_table()
