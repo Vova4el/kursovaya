@@ -13,6 +13,12 @@ class log_panel(QMainWindow):
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(lambda: self.inter_to_app())
         self.ui.pushButton_2.clicked.connect(lambda: self.create_acc())
+        r = session.query(reception).all()
+        for i in range(session.query(reception).count()):
+            if datetime.strptime(r[i].date, '%Y-%m-%d %H:%M:%S') < datetime.now():
+                r[i].id_reception_status = 1
+        session.commit()
+        DumpPostgreSql()
 
     def inter_to_app(self):
         log = self.ui.textEdit.toPlainText()
