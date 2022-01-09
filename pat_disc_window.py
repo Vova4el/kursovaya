@@ -8,7 +8,6 @@ import classes
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidgetItem
 
-
 #ОКНО_ВЫГРУЗКИ
 class pat_disc_panel(QMainWindow):
     def __init__(self, parent=None):
@@ -20,9 +19,6 @@ class pat_disc_panel(QMainWindow):
         self.ui.action.triggered.connect(lambda: self.exit_aut())
         self.ui.action_2.triggered.connect(lambda: self.exit_patient())
         self.write_table()
-        p = session.query(personnel).all()
-        for i in range(session.query(personnel).count()):
-                self.ui.comboBox_3.addItem(str(p[i].name))
 
     # вывод по внешнему ключу
     def output_by_foreign_key(self, k, v, col, j):
@@ -287,7 +283,7 @@ class pat_disc_panel(QMainWindow):
         dialog.show()
 
     # Выход из окна выгрузки обратно в окно персонала
-    def exit_partient(self):
+    def exit_patient(self):
         self.hide()
         dialog = patient_window.patient_panel(parent=self)
         dialog.show()
