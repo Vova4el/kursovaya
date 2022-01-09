@@ -13,12 +13,24 @@ class log_panel(QMainWindow):
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(lambda: self.inter_to_app())
         self.ui.pushButton_2.clicked.connect(lambda: self.create_acc())
+        s = session.query(user_status).all()
+        for i in range(session.query(user_status).count()):
+            self.ui.comboBox.addItem(s[i].status)
+        p = session.query(offices).all()
+        for i in range(session.query(offices).count()):
+            self.ui.comboBox_3.addItem(str(p[i].cab_num))
+        p = session.query(specialization).all()
+        for i in range(session.query(specialization).count()):
+            self.ui.comboBox_2.addItem(p[i].name_spec)
         r = session.query(reception).all()
+        f = 0
         for i in range(session.query(reception).count()):
             if datetime.strptime(r[i].date, '%Y-%m-%d %H:%M:%S') < datetime.now():
+                f = 1
                 r[i].id_reception_status = 1
-        session.commit()
-        DumpPostgreSql()
+        if f == 1:
+            session.commit()
+            DumpPostgreSql()
 
     def inter_to_app(self):
         log = self.ui.textEdit.toPlainText()
@@ -66,7 +78,8 @@ class log_panel(QMainWindow):
             if log == i.login:
                 self.ui.statusbar.showMessage("Пользователь с таким логином уже существует")
                 return
-        n_id = int(self.ui.comboBox.currentText())
+        s = session.query(user_status).all()
+        n_id = s[int(self.ui.comboBox.currentIndex())].id
         line = session.query(accounts).count()
         tabl = session.query(accounts).all()
         f = 0  # флаг
@@ -133,7 +146,11 @@ class log_panel(QMainWindow):
                     f = 0
                 else:
                     f = 1
-            user_setting = personnel(id=free_id2, id_spec=int(self.ui.comboBox_2.currentText()), id_office= int(self.ui.comboBox_3.currentText()),name=self.ui.textEdit_3.toPlainText(), id_acc=free_id)
+            spec = session.query(specialization).all()
+            s_id = spec[int(self.ui.comboBox_2.currentIndex())].id
+            cab = session.query(offices).all()
+            of_id = cab[int(self.ui.comboBox_3.currentIndex())].id
+            user_setting = personnel(id=free_id2, id_spec=s_id, id_office=of_id, name=self.ui.textEdit_3.toPlainText(), id_acc=free_id)
             session.add(user_setting)
             session.commit()
             DumpPostgreSql()

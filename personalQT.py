@@ -85,7 +85,7 @@ class personalUI:
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Окно персонала"))
         self.label_7.setText(_translate("MainWindow", "Выберите таблицу"))
         self.pushButton.setText(_translate("MainWindow", "Вывод таблицы"))
         self.pushButton_2.setText(_translate("MainWindow", "Изменить записи в мед книжке"))

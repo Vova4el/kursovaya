@@ -128,7 +128,7 @@ class Med_knigaUi(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Окно мед книги"))
         self.label_4.setText(_translate("MainWindow", "Поле ввода"))
         self.label_2.setText(_translate("MainWindow", "Выберите ФИО пациента"))
         self.pushButton_2.setText(_translate("MainWindow", "Изменить таблицу"))

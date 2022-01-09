@@ -1,4 +1,4 @@
-from Qt import *
+from admin_Qt import *
 import docx
 import pandas as pd
 from med_kniga_window import panel_med_kniga
@@ -19,6 +19,8 @@ class admin_panel(QMainWindow):
         self.ui.pushButton_3.clicked.connect(lambda: self.confirm_change())
         self.ui.pushButton_4.clicked.connect(lambda: self.undo_change())
         self.ui.pushButton_5.clicked.connect(lambda: self.vugr_db())
+        self.ui.action.triggered.connect(lambda: self.exit_aut())
+        self.write_table()
 
     # Выгрузка БД в Docx или Xlsx
     def vugr_db(self):
@@ -686,19 +688,8 @@ class admin_panel(QMainWindow):
         else:
             self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
 
-
-    # Выход из окна персонала обратно в окно авторизации
+    # Выход из окна админа обратно в окно авторизации
     def exit_db_panel(self):
-        print(23)
         self.hide()
         dialog = log_window.log_panel(parent=self)
-        dialog.show()
-
-    # Выход из окна персонала обратно в окно авторизации
-    def exit_med_kniga(self):
-        print(23)
-        self.hide()
-        print(24)
-        dialog = panel_med_kniga(parent=self)
-        print(25)
         dialog.show()
