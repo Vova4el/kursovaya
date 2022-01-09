@@ -6,6 +6,7 @@ import patient_window
 import log_window
 from datetime import timedelta, datetime, time
 from backup_bd import *
+from classes import *
 
 #Окно_ДЛЯ_работы с расписанием на приём
 class panel_receprion(QMainWindow):
@@ -176,9 +177,11 @@ class panel_receprion(QMainWindow):
             else:
                 self.autoplay_spec()
         if self.ui.comboBox_4.currentText() == "Отменить запись на приём":
-            query = session.query(reception).get(int(self.ui.comboBox_3.currentText()))
-            if session.query(patient).filter_by(id=classes.glob_id).first() == query.id_patient:
-                session.query(reception).filter_by(id=int(self.ui.comboBox_3.currentText())).delete(synchronize_session=False)
+            query = session.query(reception).all()
+            if classes.glob_id == query[int(self.ui.comboBox_3.currentText())-1].id_patient:
+                print(3)
+                session.query(reception).filter_by(id=query[int(self.ui.comboBox_3.currentText())-1].id).delete(synchronize_session=False)
+                print(4)
             else:
                 self.ui.statusbar.showMessage("Вы не можете отменить чужую запись на приём")
         self.write_table()
@@ -320,7 +323,9 @@ class panel_receprion(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
-            dump_sqlalchemy()
+            print(1)
+            DumpPostgreSql()
+            print(2)
             self.ui.prov = 0
             self.write_table()
         else:

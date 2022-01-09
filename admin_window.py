@@ -6,6 +6,7 @@ from backup_bd import *
 import log_window
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidgetItem
+from classes import *
 
 #ОКНО_АДМИНА
 class admin_panel(QMainWindow):
@@ -671,7 +672,7 @@ class admin_panel(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
-            dump_sqlalchemy()
+            DumpPostgreSql()
             self.ui.prov = 0
             self.write_table()
         else:

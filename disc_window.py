@@ -7,6 +7,7 @@ import log_window
 import classes
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidgetItem
+from classes import *
 
 
 #ОКНО_АДМИНА

@@ -4,6 +4,7 @@ from personal_med_kniga_QT import Med_knigaUi
 import classes
 import personnel_window
 import log_window
+from classes import *
 from backup_bd import *
 
 #Окно_ДЛЯ_работы с мед книжкой
@@ -146,7 +147,7 @@ class panel_med_kniga(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
-            dump_sqlalchemy()
+            DumpPostgreSql()
             self.ui.prov = 0
             self.write_table()
         else:

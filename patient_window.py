@@ -6,6 +6,7 @@ from patient_reception_window import panel_receprion
 from backup_bd import *
 from pat_disc_window import pat_disc_panel
 import log_window
+from classes import *
 
 
 #ОКНО_ПАЦИЕНТА
