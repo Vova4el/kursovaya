@@ -270,6 +270,7 @@ class disc_panel(QMainWindow):
                             collum2[z] = (session.query(personnel).filter_by(id=j.id_personnel).first()).name
                             collum3[z] = (session.query(specialization).filter_by(id=j.id_spec).first()).name_spec
                             collum4[z] = j.diagnoz
+                            z += 1
                     elif self.ui.comboBox_4.currentText() == "Все таблицы, но строки с пациентом" \
                          or self.ui.comboBox_4.currentText() == "Всю таблицу, но строки с пациентом":
                         p = session.query(patient).all()
@@ -279,6 +280,7 @@ class disc_panel(QMainWindow):
                             collum2[z] = (session.query(personnel).filter_by(id=j.id_personnel).first()).name
                             collum3[z] = (session.query(specialization).filter_by(id=j.id_spec).first()).name_spec
                             collum4[z] = j.diagnoz
+                            z += 1
                     else:
                         for j in session.query(med_knigа).all():
                             collum1[z] = (session.query(patient).filter_by(id=j.id_patient).first()).name
