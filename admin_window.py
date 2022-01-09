@@ -329,9 +329,9 @@ class admin_panel(QMainWindow):
         if result == "Время работы":
             table = working_hours
             self.ui.tableWidget.setColumnCount(6)
-            collums = ['id', 'id_day', 'id_spec', 'work_hours', 'free_time', 'break_time']
+            collums = ['id', 'id_day', 'id_spec', 'work_hours', 'break_time']
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                ["ID", "ID дня", "ID специализации", "рабочее время", "свободное время", "перерыв"])
+                ["ID", "ID дня", "ID специализации", "рабочее время", "перерыв"])
         if result == "Приём":
             table = reception
             self.ui.tableWidget.setColumnCount(7)

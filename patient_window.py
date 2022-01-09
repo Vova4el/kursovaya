@@ -58,10 +58,10 @@ class patient_panel(QMainWindow):
                 ["Специализация", "№ кабинета", "ФИО"])
         if result == "Время работы":
             table = working_hours
-            self.ui.tableWidget.setColumnCount(5)
-            collums = ['id', 'id_day', 'id_spec', 'work_hours', 'free_time', 'break_time']
+            self.ui.tableWidget.setColumnCount(4)
+            collums = ['id', 'id_day', 'id_spec', 'work_hours', 'break_time']
             self.ui.tableWidget.setHorizontalHeaderLabels(
-                ["День", "Специализация", "рабочее время", "Свободное время", "Перерыв"])
+                [ "День", "Специализация", "Рабочее время", "Перерыв"])
         if result == "Приём":
             table = reception
             self.ui.tableWidget.setColumnCount(6)

@@ -103,7 +103,6 @@ class working_hours(Base):
     id_day = Column(Integer, ForeignKey('day.id'))
     id_spec = Column(Integer, ForeignKey('specialization.id'))
     work_hours = Column(String)
-    free_time = Column(String)
     break_time = Column(String)
 
     def __repr__(self):
