@@ -72,16 +72,16 @@ class admin_panel(QMainWindow):
                     collums = ['id', 'cab_num']
                 if i == 9:
                     mydoc.add_paragraph("Рабочее время (working_hours):")
-                    table_1 = mydoc.add_table(rows=session.query(working_hours).count() + 1, cols=6, style='Table Grid')
+                    table_1 = mydoc.add_table(rows=session.query(working_hours).count() + 1, cols=5, style='Table Grid')
                     table = working_hours
-                    collums = ['id', 'id_day', 'id_spec', 'work_hours', 'free_time', 'break_time']
+                    collums = ['id', 'id_day', 'id_spec', 'work_hours', 'break_time']
                 if i == 10:
                     mydoc.add_paragraph("Таблица записи на приём к врачу (reception):")
                     table_1 = mydoc.add_table(rows=session.query(reception).count() + 1, cols=7, style='Table Grid')
                     table = reception
                     collums = ['id', 'id_patient', 'id_office', 'id_reception_status', 'id_personnel', 'id_spec','date']
                 if i == 11:
-                    mydoc.add_paragraph("Таблица записи на приём к врачу (personnel):")
+                    mydoc.add_paragraph("Таблица персонала (personnel):")
                     table_1 = mydoc.add_table(rows=session.query(personnel).count() + 1, cols=5, style='Table Grid')
                     table = personnel
                     collums = ['id', 'id_spec', 'id_office', 'name', 'id_acc']
@@ -126,7 +126,9 @@ class admin_panel(QMainWindow):
             table10 = pd.DataFrame({})
             table11 = pd.DataFrame({})
             for i in range(11):
+                print(4)
                 if i == 0:
+                    print(3)
                     count = session.query(personnel).count()
                     collum1 = [0] * count
                     collum2 = [0] * count
@@ -175,25 +177,25 @@ class admin_panel(QMainWindow):
                         z += 1
                     table4 = pd.DataFrame({'id': collum1, 'cab_num': collum2})
                 if i == 4:
+                    print(4)
                     count = session.query(working_hours).count()
                     collum1 = [0] * count
                     collum2 = [0] * count
                     collum3 = [0] * count
                     collum4 = [""] * count
                     collum5 = [""] * count
-                    collum6 = [""] * count
                     z = 0
                     for j in session.query(working_hours).all():
                         collum1[z] = j.id
                         collum2[z] = j.id_day
                         collum3[z] = j.id_spec
                         collum4[z] = j.work_hours
-                        collum5[z] = j.free_time
-                        collum6[z] = j.break_time
+                        collum5[z] = j.break_time
                         z += 1
                     table5 = pd.DataFrame({'id': collum1, 'id_day': collum2, 'id_spec': collum3, 'work_hours': collum4,
-                                           'free_time': collum5, 'break_time': collum6})
+                                            'break_time': collum5})
                 if i == 5:
+                    print(5)
                     count = session.query(reception).count()
                     collum1 = [0] * count
                     collum2 = [0] * count
@@ -214,6 +216,7 @@ class admin_panel(QMainWindow):
                         z += 1
                     table6 = pd.DataFrame({'id': collum1, 'id_patient': collum2, 'id_office': collum3, 'id_reception_status': collum4, 'id_personnel': collum5, 'id_spec': collum6, 'date': collum7})
                 if i == 6:
+                    print(6)
                     count = session.query(accounts).count()
                     collum1 = [0] * count
                     collum2 = [""] * count
@@ -228,21 +231,25 @@ class admin_panel(QMainWindow):
                         z += 1
                     table7 = pd.DataFrame({'id': collum1, 'login': collum2, 'password': collum3, 'id_stat': collum4})
                 if i == 7:
+                    print(1)
                     count = session.query(med_knigа).count()
                     collum1 = [0] * count
-                    collum2 = [""] * count
+                    collum2 = [0] * count
                     collum3 = [0] * count
-                    collum4 = [""] * count
+                    collum4 = [0] * count
+                    collum5 = [""] * count
                     z = 0
                     for j in session.query(med_knigа).all():
                         collum1[z] = j.id
                         collum2[z] = j.id_patient
                         collum3[z] = j.id_personnel
-                        collum4[z] = j.diagnoz
+                        collum4[z] = j.id_spec
+                        collum5[z] = j.diagnoz
                         z += 1
                     table8 = pd.DataFrame({'id': collum1, 'id_patient': collum2, 'id_personnel': collum3,
-                                           'diagnoz': collum4})
+                                           'id_spec': collum4,'diagnoz': collum5})
                 if i == 8:
+                    print(2)
                     count = session.query(day).count()
                     collum1 = [0] * count
                     collum2 = [""] * count
@@ -647,6 +654,8 @@ class admin_panel(QMainWindow):
                         query.id_patient = int(text)
                     if colona == "id_personnel":
                         query.id_personnel = int(text)
+                    if colona == "id_spec":
+                        query.id_spec = int(text)
                     if colona == "diagnoz":
                         query.diagnoz = text
                 if change == "Добавить строку":
@@ -663,7 +672,7 @@ class admin_panel(QMainWindow):
                             f = 0
                         else:
                             f = 1
-                    new = table(id=free_id, id_patient=int(lis[0]), id_personnel=int(lis[1]), diagnoz=lis[2])
+                    new = table(id=free_id, id_patient=int(lis[0]), id_personnel=int(lis[1]),id_spec=int(lis[2]), diagnoz=lis[3])
                     session.add(new)
             if change == "Удалить строку":
                 session.query(table).filter_by(id=stlb).delete(synchronize_session=False)
@@ -689,7 +698,7 @@ class admin_panel(QMainWindow):
             self.ui.statusbar.showMessage("Сначала внесите изменение в таблицу")
 
     # Выход из окна админа обратно в окно авторизации
-    def exit_db_panel(self):
+    def exit_aut(self):
         self.hide()
         dialog = log_window.log_panel(parent=self)
         dialog.show()
