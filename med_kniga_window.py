@@ -132,14 +132,12 @@ class panel_med_kniga(QMainWindow):
 
     # Выход из окна персонала обратно в окно авторизации
     def exit_aut(self):
-        print(23)
         self.hide()
         dialog = log_window.log_panel(parent=self)
         dialog.show()
 
     # Выход из окна персонала обратно в окно авторизации
     def exit_personnel(self):
-        print(1)
         self.hide()
         dialog = personnel_window.personal_panel(parent=self)
         dialog.show()

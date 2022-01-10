@@ -134,7 +134,6 @@ class patient_panel(QMainWindow):
 
     # Выход из окна пациента обратно в окно авторизации
     def exit_db_panel(self):
-        print(23)
         self.hide()
         dialog = log_window.log_panel(parent=self)
         dialog.show()

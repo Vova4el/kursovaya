@@ -321,9 +321,7 @@ class panel_receprion(QMainWindow):
     def confirm_change(self):
         if self.ui.prov != 0:
             session.commit()
-            print(1)
             DumpPostgreSql()
-            print(2)
             self.ui.prov = 0
             self.write_table()
         else:

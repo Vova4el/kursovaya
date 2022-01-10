@@ -126,9 +126,7 @@ class admin_panel(QMainWindow):
             table10 = pd.DataFrame({})
             table11 = pd.DataFrame({})
             for i in range(11):
-                print(4)
                 if i == 0:
-                    print(3)
                     count = session.query(personnel).count()
                     collum1 = [0] * count
                     collum2 = [0] * count
@@ -177,7 +175,6 @@ class admin_panel(QMainWindow):
                         z += 1
                     table4 = pd.DataFrame({'id': collum1, 'cab_num': collum2})
                 if i == 4:
-                    print(4)
                     count = session.query(working_hours).count()
                     collum1 = [0] * count
                     collum2 = [0] * count
@@ -195,7 +192,6 @@ class admin_panel(QMainWindow):
                     table5 = pd.DataFrame({'id': collum1, 'id_day': collum2, 'id_spec': collum3, 'work_hours': collum4,
                                             'break_time': collum5})
                 if i == 5:
-                    print(5)
                     count = session.query(reception).count()
                     collum1 = [0] * count
                     collum2 = [0] * count
@@ -216,7 +212,6 @@ class admin_panel(QMainWindow):
                         z += 1
                     table6 = pd.DataFrame({'id': collum1, 'id_patient': collum2, 'id_office': collum3, 'id_reception_status': collum4, 'id_personnel': collum5, 'id_spec': collum6, 'date': collum7})
                 if i == 6:
-                    print(6)
                     count = session.query(accounts).count()
                     collum1 = [0] * count
                     collum2 = [""] * count
@@ -231,7 +226,6 @@ class admin_panel(QMainWindow):
                         z += 1
                     table7 = pd.DataFrame({'id': collum1, 'login': collum2, 'password': collum3, 'id_stat': collum4})
                 if i == 7:
-                    print(1)
                     count = session.query(med_knigа).count()
                     collum1 = [0] * count
                     collum2 = [0] * count
@@ -249,7 +243,6 @@ class admin_panel(QMainWindow):
                     table8 = pd.DataFrame({'id': collum1, 'id_patient': collum2, 'id_personnel': collum3,
                                            'id_spec': collum4,'diagnoz': collum5})
                 if i == 8:
-                    print(2)
                     count = session.query(day).count()
                     collum1 = [0] * count
                     collum2 = [""] * count
