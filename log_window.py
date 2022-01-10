@@ -23,12 +23,12 @@ class log_panel(QMainWindow):
         for i in range(session.query(specialization).count()):
             self.ui.comboBox_2.addItem(p[i].name_spec)
         r = session.query(reception).all()
-        f = 0
+        flag = 0
         for i in range(session.query(reception).count()):
-            if datetime.strptime(r[i].date, '%Y-%m-%d %H:%M:%S') < datetime.now():
-                f = 1
+            if (datetime.strptime(r[i].date, '%Y-%m-%d %H:%M:%S') < datetime.now()) and (r[i].id_reception_status == 2):
+                flag = 1
                 r[i].id_reception_status = 1
-        if f == 1:
+        if flag == 1:
             session.commit()
             DumpPostgreSql()
 

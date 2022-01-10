@@ -147,12 +147,12 @@ class receprionUI(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "окно расписания"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Окно расписания"))
         self.label_4.setText(_translate("MainWindow", "Поле ввода"))
         self.label_2.setText(_translate("MainWindow", "Выберите ФИО персонала"))
         self.label_6.setText(_translate("MainWindow", "Выберите специализацию"))
         self.pushButton_2.setText(_translate("MainWindow", "Выполнить действие"))
-        self.label_5.setText(_translate("MainWindow", "Выберите как изменить таблицу"))
+        self.label_5.setText(_translate("MainWindow", "Выберите, что хотите сделать"))
         self.pushButton_3.setText(_translate("MainWindow", "Подтвердить запись"))
         self.label_3.setText(_translate("MainWindow", "Выберите строку из таблицы"))
         self.label_7.setText(_translate("MainWindow", "Выберите запись на приём"))

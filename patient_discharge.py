@@ -105,7 +105,7 @@ class pat_discharge(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Окно выгрузки данных"))
         self.label.setText(_translate("MainWindow", "Выберите таблицу из списка"))
         self.pushButton.setText(_translate("MainWindow", "Вывод таблицы"))
         self.label_6.setText(_translate("MainWindow", "Во что вывести"))
